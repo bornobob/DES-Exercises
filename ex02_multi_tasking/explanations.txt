@@ -1,0 +1,18 @@
+Group names + s numbers:
+Justin Reniers - s4743474
+Bob Ruiken     - s4721306
+
+ex02a: 
+The output simply shows all the tasks in the order they were created and started.
+
+ex02b:
+The output again shows the names but now also the argument they got (which is also in their name, since we just gave them the index of the for-loop). All of these numbers match and are printed in the order in which they were created. 
+
+ex02c:
+The output again shows the correct task names, but now all the task numbers are 5, since a sleep is put before de dereferencing. 
+
+ex02d:
+The output remains the same, when we set the priority from 0 through 4, we get weird results though. It seems Xenomai does not like a priority of 0, so we changed it to ranging from 1 through 5. The reason the output remains the same probably is because when the task with a low priority is started, there is no other task, so it is started anyway. We can confirm this when we add the sleep statement from exercise (c) into this one. The output then still shows weird arguments (all of them are the same), but we see that the last task finishes first. 
+
+ex02e:
+The result shows the task names, the task numbers and how often they run. When we count how often each process runs after some time. We see that indeed, Task 0 runs 3 times more often than Task 2 and 2 times more often than Task 1. This shows that the periods work. 
