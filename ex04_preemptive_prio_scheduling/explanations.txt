@@ -1,0 +1,16 @@
+Group names + s numbers:
+Justin Reniers     - s4743474
+Bob Ruiken         - s4721306
+
+ex04a:
+The output shows the execution of the tasks 2 - 1 - 0 (in that order). This is because the broadcasts enables all the tasks simultaneously, so the FIFO does not matter and the priority is taken into account.
+
+ex04b:
+Now the execution is in the order 1 - 2 - 0. The same reason as above, but now 2 and 1 have the same priority, so the deciding factor is the order of creation.
+
+ex04c:
+The output first shows half of the execution of 2, which is then interrupted since the priorities of tasks 1 and 0 have been increased such that they are higher than the priority of task 2. After the execution of 1 and 0, the second half of task 2 is executed.
+
+ex04d:
+Now the tasks change their own priorities such that halfway ones execution, their priority becomes the lowest. This means that we first see half the execution of task 2, then half the execution of task 1, then half the execution of task 0. Finally, we see the second halves of the tasks in the same order. 
+	
