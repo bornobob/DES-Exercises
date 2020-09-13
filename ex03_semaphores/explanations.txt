@@ -1,0 +1,12 @@
+Group names + s numbers:
+Justin Reniers     - s4743474
+Bob Ruiken         - s4721306
+
+ex03a:
+First, taskOne executes fully, then taskTwo executes fully. This is because the task two is only started after task one finishes. 
+
+ex03b:
+We set each task to first obtain the semaphore (which is set to pulse mode), then it prints, and finally it releases the semaphore again. Pulse releases a single waiter each time the release is called, it does nothing with the actual counter. This makes it such that we interleave the two processes perfectly.
+
+ex03c:
+Just like in exercise b, we added the "v" and "p" statements to the demo function. Every task already had a priority, so no need to change any of that. The only other thing we did have to change is that we had to call rt_sem_broadcast or rt_sem_v at the end of the creation of the tasks. Both of these behave exactly the same, since our semaphore is in S_PRIO mode. 
