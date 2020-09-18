@@ -1,0 +1,12 @@
+Group names + s numbers:
+Justin Reniers     - s4743474
+Bob Ruiken         - s4721306
+
+ex05a:
+We see the execution of the three tasks sequentially. Each task (starting at 0) prints 20 statements until they have reached time=20000000. 
+
+ex05b:
+Now each task cannot run for very long, so after a short while (usually 1 or 2 print statements) the next task will be resumed. Curiously, in the first two print statements we see first task 0 with 1 print statement, then task 2 with 1 print statement. Overall, the order of the tasks is 0-1-2, but at the start this seems to be rather random. 
+
+ex05c:
+When the new task is added with higher probability, it will always run before the other tasks. It does not matter which mode it is in. This is simply because it has a higher probability. 
