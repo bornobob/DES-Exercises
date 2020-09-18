@@ -12,3 +12,4 @@
 
 # Ignore zipped files
 **/*.zip
+**/*.rar
