@@ -20,7 +20,7 @@ void taskOne(void *arg)
 {
     int i;
     for (i=0; i < ITER; i++) {
-        rt_sem_p(&s1, sec);
+        rt_sem_p(&s1, TM_INFINITE);
         printf("I am taskOne and global = %d................\n", ++global);
         rt_sem_v(&s1);
     }
@@ -30,7 +30,7 @@ void taskTwo(void *arg)
 {
     int i;
     for (i=0; i < ITER; i++) {
-        rt_sem_p(&s1, sec);
+        rt_sem_p(&s1, TM_INFINITE);
         printf("I am taskTwo and global = %d----------------\n", --global);
         rt_sem_v(&s1);
 	}
@@ -44,6 +44,8 @@ int main(int argc, char* argv[]) {
 
     rt_task_start(&t1, &taskOne, 0);
     rt_task_start(&t2, &taskTwo, 0);
+	
+	rt_sem_v(&s1);
 	
     pause();
 	
