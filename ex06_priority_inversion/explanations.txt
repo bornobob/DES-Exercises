@@ -1,0 +1,9 @@
+Group names + s numbers:
+Justin Reniers     - s4743474
+Bob Ruiken         - s4721306
+
+ex06a:
+We simply created three tasks, the first task runs instantly and then spins the CPU for SPINTIME, the other tasks are woken up after SPINTIME / 4 and SPINTIME / 2 respectively. This way the medium priority tasks still runs for a bit before the high priority task tries to obtain the semaphore.
+
+ex06b:
+Instead of waking up the tasks using semaphore broadcast like we did in exercise (a), we just let the tasks sleep for a while. We made sure that the task with the lowest priority woke up first, then the task with medium priority and finally the task with the highest priority. But we also made sure that the task with the high priority wakes up before the lowest priority task releases the mutex.
