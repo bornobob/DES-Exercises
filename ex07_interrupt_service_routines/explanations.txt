@@ -1,0 +1,8 @@
+Group names + s numbers:
+Justin Reniers     - s4743474
+Bob Ruiken         - s4721306
+
+ex07c:
+The output of the program is basically split up in two now, we have the console output and the light output. 
+The console shows the number of times the button is pressed, and it shows it every time you press the button. 
+The light goes switches between the on- and off-state every time you press the button. This time we could do all of these things with just one task. 
