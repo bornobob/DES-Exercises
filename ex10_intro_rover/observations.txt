@@ -1,0 +1,16 @@
+Description:
+    In short, our structure contains a Robot, Runner and Actions. A runner takes a Robot and a list of Actions, and
+    executes the Actions in order of their priority. The Actions we have are the Borderaction (which detects black
+    borders), the Collisionaction (which detects collision with the ball) and the Ultrasoundaction, which tries to
+    prevent collisions with the ball. Finally, "main.py" is used to execute this all.
+
+
+Observations:
+    If the Robot is working on an action and then breaks an invariant (like never crossing a black border), then
+    regardless of priority it will finish its current action, possibly causing the Robot to ignore black borders.
+    This happens for example when the Robot is driving, encounters a black border and starts speaking, and while
+    speaking crosses another black border. In this example case the speaking signal is blocking, and thus the robot
+    cannot perform any checks on its invariants.
+
+    It might be important to note that we used ev3dev2simulator instead of the real Robot.
+
