@@ -10,3 +10,6 @@ class UltrasoundAction(BaseAction):
             self.robot.rotate_degrees(35, reverse_before_continue=False)
             return True
         return False
+
+    def signal(self):
+        pass

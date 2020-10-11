@@ -31,3 +31,9 @@ class BaseAction:
         The check function should do the check of this Action, returns True if the action was taken, False otherwise.
         """
         pass
+
+    def signal(self):
+        """
+        The signal function should give a signal of this Action.
+        """
+        pass

@@ -8,6 +8,11 @@ class BorderAction(BaseAction):
     """
     def check(self):
         if self.robot.cs.color == ColorSensor.COLOR_BLACK:
+            self.robot.tank_drive.stop()
+            self.signal()
             self.robot.rotate_degrees(80)
             return True
         return False
+
+    def signal(self):
+        self.robot.sound.speak("Out of bounds")

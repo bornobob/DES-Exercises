@@ -13,3 +13,6 @@ class CollisionAction(BaseAction):
             self.robot.rotate_degrees(-80)
             return True
         return False
+
+    def signal(self):
+        pass
