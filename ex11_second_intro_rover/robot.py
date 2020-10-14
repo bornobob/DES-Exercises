@@ -47,27 +47,50 @@ class Robot:
         """
         self.tank_drive.on(SpeedPercent(speed_percentage), SpeedPercent(speed_percentage))
 
-    def reverse_for_rotations(self, nr_rotations, speed_percentage=30):
+    def reverse_for_rotations(self, nr_rotations, speed_percentage=30, lock=None):
         """
         Reverses the Robot (makes it move backwards).
         :param nr_rotations: Number of degrees Robot turns.
         :param speed_percentage: Speed at which the Robot reverses. Percentage between 0 and 100.
+        :param lock: Optional Lock to stop the operation when requested
         """
-        step_size = .05
+        step_size = .2
         for _ in range(0, int(nr_rotations * (1 / step_size))):
-            self.tank_drive.on_for_rotations(SpeedPercent(-speed_percentage),
-                                             SpeedPercent(-speed_percentage),
-                                             step_size)
+            if not lock or not lock.is_locked():
+                self.tank_drive.on_for_rotations(SpeedPercent(-speed_percentage),
+                                                 SpeedPercent(-speed_percentage),
+                                                 step_size)
+            else:
+                return
 
-    def rotate_degrees(self, degrees, reverse_before_continue=True, speed_percentage=35):
+    def turn_for_rotations(self, degrees, speed_percentage=30, lock=None):
+        """
+        Turn for a number of degrees with the given speed.
+        Can be pre-empted when given a Lock.
+        :param degrees: The number of degrees to turn.
+        :param speed_percentage: The speed to turn at.
+        :param lock: Optional Lock to stop the operation when requested.
+        """
+        for i in range(0, abs(degrees//4)):
+            print('rotating: ', i, '/', degrees // 4 , lock.is_locked())
+            if not lock or not lock.is_locked():
+                print('lock checked, was not locked')
+                self.tank_drive.turn_left(SpeedPercent(speed_percentage), 4 if degrees > 0 else -4)
+                print('moved')
+            else:
+                print('lock checked, was locked, exiting')
+                return
+
+    def rotate_degrees(self, degrees, reverse_before_continue=True, speed_percentage=35, lock=None):
         """
         Rotates the Robot.
         :param degrees: Number of degrees the Robot is moved from its current position.
         :param reverse_before_continue: True if Robot needs to reverse before turning, False if not.
         :param speed_percentage: Speed at which the Robot turns. Percentage between 0 and 100.
+        :param lock: Optional Lock to stop the operation when requested
         """
-        self.tank_drive.stop()
         if reverse_before_continue:
-            self.reverse_for_rotations(1)
-        self.tank_drive.turn_left(SpeedPercent(speed_percentage), degrees)
-        self.start_drive()
+            self.reverse_for_rotations(0.4, lock=lock)
+        print('done reversing')
+        self.turn_for_rotations(degrees, speed_percentage=speed_percentage, lock=lock)
+        print('done rotating')

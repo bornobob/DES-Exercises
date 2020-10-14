@@ -1,3 +1,7 @@
+from utils import Lock
+from threading import Thread
+
+
 class BaseAction:
     """
     Base action is only here so other actions can override it.
@@ -17,20 +21,41 @@ class BaseAction:
         """
         self.robot = None
         self.priority = priority
+        self.lock = Lock()
+        self.action_thread = None
 
     def set_robot(self, robot):
         """
         Binds a robot to the Action, this is needed since the action needs access to the sensors.
-        :param robot:
-        :return:
         """
         self.robot = robot
 
     def check(self):
         """
-        The check function should do the check of this Action, returns True if the action was taken, False otherwise.
+        The check function should do the check of this Action, returns True if the action needs to be taken, False
+        otherwise.
         """
         pass
+
+    def _do_action(self):
+        """
+        This function should implement the actual action taken when check() returns True.
+        Note that this function should be using the Lock, when the Lock is locked, this function should be stopped ASAP.
+        """
+        pass
+
+    def is_running(self):
+        return self.action_thread and self.action_thread.is_alive()
+
+    def action(self):
+        self.action_thread = Thread(target=self._do_action, daemon=True)
+        self.action_thread.start()
+
+    def kill(self):
+        self.lock.lock()
+        if self.action_thread:
+            self.action_thread.join()
+        self.lock.unlock()
 
     def signal(self):
         """

@@ -7,12 +7,11 @@ class BorderAction(BaseAction):
     The BorderAction tries to keep the Robot within a black drawn border.
     """
     def check(self):
-        if self.robot.cs.color == ColorSensor.COLOR_BLACK:
-            self.robot.tank_drive.stop()
-            self.signal()
-            self.robot.rotate_degrees(80)
-            return True
-        return False
+        return self.robot.cs.color == ColorSensor.COLOR_BLACK
+
+    def _do_action(self):
+        self.robot.tank_drive.stop()
+        self.robot.rotate_degrees(80, lock=self.lock)
 
     def signal(self):
         self.robot.sound.speak("Out of bounds")

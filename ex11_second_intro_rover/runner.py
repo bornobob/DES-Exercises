@@ -1,3 +1,6 @@
+import time
+
+
 class Runner:
     """
     The runner is the class that executes the actions of a Robot.
@@ -19,14 +22,31 @@ class Runner:
         for a in self.actions:
             a.set_robot(self.robot)
 
+    @staticmethod
+    def action_may_run(new_action, current_action):
+        if current_action is None:
+            return True
+        if new_action.priority > current_action.priority:
+            return True
+        if not current_action.is_running():
+            return True
+        return False
+
     def run(self):
         """
         Sorts the actions in the list of coupled Robot actions by their priority and continuously performs those actions
         in that order.
         """
         self.robot.start_drive()
+        current_action = None
         sorted_actions = list(sorted(self.actions, key=lambda x: -x.priority))
         while True:
             for a in sorted_actions:
                 if a.check():
-                    break
+                    if Runner.action_may_run(a, current_action):
+                        if current_action and current_action.is_running():
+                            current_action.kill()
+                        a.action()
+                        current_action = a
+                        break
+            time.sleep(.1)
