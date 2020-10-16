@@ -1,6 +1,7 @@
 from actions import *
 from runner import Runner
 from robot import Robot
+from ev3dev2.sensor.lego import ColorSensor
 from utils import *
 
 
@@ -17,7 +18,9 @@ def create_runner(master):
     touch_action = CollisionAction(priority=5)
     see_action = UltrasoundAction(priority=1)
     drive_action = DriveAction(priority=0)
-    Runner(r, [edge_action, touch_action, see_action, drive_action]).run()
+    color_action = ColorDetAction(priority=8, colors=[ColorSensor.COLOR_RED, ColorSensor.COLOR_YELLOW,
+                                                      ColorSensor.COLOR_BLUE])
+    Runner(r, [edge_action, touch_action, see_action, drive_action, color_action]).run()
 
 
 if __name__ == '__main__':
