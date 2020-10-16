@@ -1,24 +1,34 @@
-from time import sleep
+from queue import Queue
+import threading
 
 
 class Bluetooth:
-
     def __init__(self, server_mac, port=3):
         self.server_mac = server_mac
         self.port = port
+        self.queue = Queue()
+        self.socket = None
+        self.out_sock = None
+        self.in_sock = None
 
-    @staticmethod
-    def disconnect(sock):
-        sock.close()
+    def disconnect(self):
+        for s in [self.socket, self.in_sock, self.out_sock]:
+            s.close()
 
-    @staticmethod
-    def listen(sock_in, sock_out):
-        print('Now listening...')
+    def listen(self):
         while True:
-            data = int(sock_in.readline())
-            print('Received ' + str(data))
-            data += 1
-            sleep(1)
-            sock_out.write(str(data) + '\n')
-            sock_out.flush()
-            print('Sent ' + str(data))
+            color = int(self.in_sock.readline())
+            self.queue.put(color)
+
+    def write(self, data):
+        self.out_sock.write(str(data) + '\n')
+        self.out_sock.flush()
+
+    def connect(self):
+        return None, None, None
+
+    def initiate_connection(self):
+        self.socket, self.in_sock, self.out_sock = self.connect()
+        print('after connect:', self.socket, self.in_sock, self.out_sock)
+        listener = threading.Thread(target=self.listen)
+        listener.start()

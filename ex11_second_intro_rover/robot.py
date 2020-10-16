@@ -14,10 +14,14 @@ class Robot:
     and the tank drive, and it sets up the sensors. On top of that it provides functions so that the robot can be
     controlled.
     """
-    def __init__(self):
+    def __init__(self, bluetooth=None):
         """
         Initializer for a Robot.
         """
+        self.bluetooth = bluetooth
+        if bluetooth:
+            self.bluetooth.initiate_connection()
+            print('connected')
         self.cs = ColorSensor()
         self.left_touch = TouchSensor('ev3-ports:in1')
         self.right_touch = TouchSensor('ev3-ports:in4')
