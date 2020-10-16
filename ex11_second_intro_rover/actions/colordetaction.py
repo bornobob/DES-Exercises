@@ -2,7 +2,15 @@ from actions.baseaction import BaseAction
 
 
 class ColorDetAction(BaseAction):
+    """
+    The ColorDetAction detects the colors on the ground. Stops and displays the found colors once it has found all the
+    specified colors.
+    """
     def __init__(self, priority, colors):
+        """
+        Initializer for the ColorDetAction action.
+        :param colors: List of colors the Robot has to find.
+        """
         super().__init__(priority)
         self.colors = set(colors)
         self.detected = set()
@@ -16,12 +24,21 @@ class ColorDetAction(BaseAction):
         return False
 
     def handle_queue(self):
+        """
+        If the Robot has a bluetooth connection, then it checks if there is a message in the queue. If there is a
+        message in the queue, the color is added to the set "detected" and a signal is given.
+        """
         if not self.robot.bluetooth.queue.empty():
             new_color = self.robot.bluetooth.queue.get()
             self.detected.add(new_color)
             self.robot.speak('You detected a new color')
 
     def handle_colordetection(self):
+        """
+        If Robot detects a color and the color is a new color, it is added to the set "detected". If the Robot has a
+        bluetooth connection, it also sends out a message containing that color via its connection. Finally signals
+        that it has found a color.
+        """
         if self.robot.cs.color in self.colors and self.robot.cs.color not in self.detected:
             self.detected.add(self.robot.cs.color)
             if self.robot.bluetooth:

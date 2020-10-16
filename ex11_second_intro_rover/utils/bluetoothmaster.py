@@ -3,6 +3,9 @@ from utils.bluetooth import Bluetooth
 
 
 class BluetoothMaster(Bluetooth):
+    """
+    The BluetoothMaster accepts an incoming client socket from slave to establish a bluetooth connection.
+    """
     def __init__(self, server_mac, port):
         Bluetooth.__init__(self, server_mac, port)
         self.is_master = True

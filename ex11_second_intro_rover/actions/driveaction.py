@@ -2,6 +2,9 @@ from actions.baseaction import BaseAction
 
 
 class DriveAction(BaseAction):
+    """
+    The DriveAction always tries to drive the Robot forward.
+    """
     def check(self):
         return True
 

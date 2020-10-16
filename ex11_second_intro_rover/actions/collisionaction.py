@@ -3,7 +3,7 @@ from actions.baseaction import BaseAction
 
 class CollisionAction(BaseAction):
     """
-    The Collision Action turns around a bit when bumping into an object by checking the Touch Sensors
+    The Collision Action turns around a bit when bumping into an object by checking the Touch Sensors.
     """
     def check(self):
         return self.robot.right_touch.is_pressed or self.robot.left_touch.is_pressed

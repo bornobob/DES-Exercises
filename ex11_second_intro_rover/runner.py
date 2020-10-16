@@ -24,6 +24,13 @@ class Runner:
 
     @staticmethod
     def action_may_run(new_action, current_action):
+        """
+        Detects whether an action may interrupt the running action.
+        :param new_action: The action that wants to interrupt.
+        :param current_action: The action currently running.
+        :return: True if there is no current_action, new_action has a higher priority than current_action or there
+        is no currently running action. Returns False otherwise.
+        """
         if current_action is None:
             return True
         if new_action.priority > current_action.priority:
