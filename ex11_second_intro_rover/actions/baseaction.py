@@ -44,11 +44,16 @@ class BaseAction:
         """
         pass
 
+    def _action_then_signal(self):
+        self._do_action()
+        if not self.lock.is_locked():
+            self.signal()
+
     def is_running(self):
         return self.action_thread and self.action_thread.is_alive()
 
     def action(self):
-        self.action_thread = Thread(target=self._do_action, daemon=True)
+        self.action_thread = Thread(target=self._action_then_signal, daemon=True)
         self.action_thread.start()
 
     def kill(self):

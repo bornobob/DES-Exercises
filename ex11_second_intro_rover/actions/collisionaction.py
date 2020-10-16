@@ -13,6 +13,3 @@ class CollisionAction(BaseAction):
             self.robot.rotate_degrees(rotations=.4, lock=self.lock, rpm=30)
         elif self.robot.right_touch.is_pressed:
             self.robot.rotate_degrees(rotations=.4, lock=self.lock, rpm=-30)
-
-    def signal(self):
-        pass
