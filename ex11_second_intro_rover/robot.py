@@ -1,9 +1,11 @@
-from ev3dev2.motor import OUTPUT_A, OUTPUT_D, SpeedPercent, MoveDifferential
+from ev3dev2.motor import OUTPUT_A, OUTPUT_D, MoveDifferential, SpeedRPM, SpeedPercent, SpeedDPS
 from ev3dev2.unit import STUD_MM
 from ev3dev2.wheel import EV3EducationSetTire
 from ev3dev2.sensor.lego import UltrasonicSensor, TouchSensor, ColorSensor
 from ev3dev2.led import Leds
 from ev3dev2.sound import Sound
+from datetime import datetime, timedelta
+import time
 
 
 class Robot:
@@ -47,50 +49,45 @@ class Robot:
         """
         self.tank_drive.on(SpeedPercent(speed_percentage), SpeedPercent(speed_percentage))
 
-    def reverse_for_rotations(self, nr_rotations, speed_percentage=30, lock=None):
+    def reverse_for_rotations(self, nr_rotations, rpm=60, lock=None):
         """
         Reverses the Robot (makes it move backwards).
         :param nr_rotations: Number of degrees Robot turns.
-        :param speed_percentage: Speed at which the Robot reverses. Percentage between 0 and 100.
+        :param rpm: Speed at which the Robot reverses in rotations per minute.
         :param lock: Optional Lock to stop the operation when requested
         """
-        step_size = .2
-        for _ in range(0, int(nr_rotations * (1 / step_size))):
-            if not lock or not lock.is_locked():
-                self.tank_drive.on_for_rotations(SpeedPercent(-speed_percentage),
-                                                 SpeedPercent(-speed_percentage),
-                                                 step_size)
-            else:
-                return
+        self.tank_drive.on_for_rotations(SpeedRPM(-rpm), SpeedRPM(-rpm), nr_rotations, block=False)
+        end_time = datetime.now() + timedelta(seconds=(nr_rotations*60)/rpm)
+        while datetime.now() < end_time:
+            if lock.is_locked():
+                self.tank_drive.stop()
+                break
+            time.sleep(0.01)
 
-    def turn_for_rotations(self, degrees, speed_percentage=30, lock=None):
+    def turn_for_rotations(self, rotations, rpm=30, lock=None):
         """
         Turn for a number of degrees with the given speed.
         Can be pre-empted when given a Lock.
-        :param degrees: The number of degrees to turn.
-        :param speed_percentage: The speed to turn at.
+        :param rotations: The number of rotations to turn.
+        :param rpm: The speed to turn at.
         :param lock: Optional Lock to stop the operation when requested.
         """
-        for i in range(0, abs(degrees//4)):
-            print('rotating: ', i, '/', degrees // 4 , lock.is_locked())
-            if not lock or not lock.is_locked():
-                print('lock checked, was not locked')
-                self.tank_drive.turn_left(SpeedPercent(speed_percentage), 4 if degrees > 0 else -4)
-                print('moved')
-            else:
-                print('lock checked, was locked, exiting')
-                return
+        self.tank_drive.on_for_rotations(SpeedRPM(rpm), SpeedRPM(-rpm), abs(rotations), block=False)
+        end_time = datetime.now() + timedelta(seconds=(abs(rotations)*60)/abs(rpm))
+        while datetime.now() < end_time:
+            if lock.is_locked():
+                self.tank_drive.stop()
+                break
+            time.sleep(0.01)
 
-    def rotate_degrees(self, degrees, reverse_before_continue=True, speed_percentage=35, lock=None):
+    def rotate_degrees(self, rotations, reverse_before_continue=True, rpm=35, lock=None):
         """
         Rotates the Robot.
-        :param degrees: Number of degrees the Robot is moved from its current position.
+        :param rotations: Number of rotations the Robot rotates.
         :param reverse_before_continue: True if Robot needs to reverse before turning, False if not.
-        :param speed_percentage: Speed at which the Robot turns. Percentage between 0 and 100.
+        :param rpm: Speed at which the Robot turns.
         :param lock: Optional Lock to stop the operation when requested
         """
         if reverse_before_continue:
-            self.reverse_for_rotations(0.4, lock=lock)
-        print('done reversing')
-        self.turn_for_rotations(degrees, speed_percentage=speed_percentage, lock=lock)
-        print('done rotating')
+            self.reverse_for_rotations(.6, lock=lock)
+        self.turn_for_rotations(rotations, rpm=rpm, lock=lock)

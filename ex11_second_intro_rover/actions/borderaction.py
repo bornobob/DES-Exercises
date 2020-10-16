@@ -11,7 +11,7 @@ class BorderAction(BaseAction):
 
     def _do_action(self):
         self.robot.tank_drive.stop()
-        self.robot.rotate_degrees(80, lock=self.lock)
+        self.robot.rotate_degrees(.3, lock=self.lock)
 
     def signal(self):
         self.robot.sound.speak("Out of bounds")

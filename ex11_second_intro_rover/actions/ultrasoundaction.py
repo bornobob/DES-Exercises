@@ -9,7 +9,7 @@ class UltrasoundAction(BaseAction):
         return -1 < self.robot.us.value() <= 300
 
     def _do_action(self):
-        self.robot.rotate_degrees(35, reverse_before_continue=False, lock=self.lock)
+        self.robot.rotate_degrees(rotations=.3, reverse_before_continue=False, lock=self.lock)
 
     def signal(self):
         pass

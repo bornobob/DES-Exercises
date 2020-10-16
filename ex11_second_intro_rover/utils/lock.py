@@ -3,7 +3,6 @@ class Lock:
         self.value = False
 
     def is_locked(self):
-        print('checking lock')
         return self.value
 
     def lock(self):
