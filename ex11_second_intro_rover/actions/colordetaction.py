@@ -11,7 +11,9 @@ class ColorDetAction(BaseAction):
         if self.robot.cs.color in self.colors:
             if self.robot.cs.color not in self.detected:
                 return True
-        return not self.robot.bluetooth.queue.empty()
+        if self.robot.bluetooth:
+            return not self.robot.bluetooth.queue.empty()
+        return False
 
     def handle_queue(self):
         if not self.robot.bluetooth.queue.empty():
@@ -22,11 +24,13 @@ class ColorDetAction(BaseAction):
     def handle_colordetection(self):
         if self.robot.cs.color in self.colors and self.robot.cs.color not in self.detected:
             self.detected.add(self.robot.cs.color)
-            self.robot.bluetooth.write(self.robot.cs.color)
+            if self.robot.bluetooth:
+                self.robot.bluetooth.write(self.robot.cs.color)
             self.robot.speak('I detected a new color')
 
     def _do_action(self):
-        self.handle_queue()
+        if self.robot.bluetooth:
+            self.handle_queue()
         self.handle_colordetection()
         if self.detected == self.colors:
             self.robot.tank_drive.stop()

@@ -12,8 +12,10 @@ PORT = 4
 def create_runner(master):
     if master:
         r = Robot(BluetoothMaster(MAC_ADDRESS, PORT))
-    else:
+    elif master is not None:
         r = Robot(BluetoothSlave(MAC_ADDRESS, PORT))
+    else:
+        r = Robot()
     edge_action = BorderAction(priority=10)
     touch_action = CollisionAction(priority=5)
     see_action = UltrasoundAction(priority=1)
