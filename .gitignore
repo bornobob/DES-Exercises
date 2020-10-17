@@ -16,3 +16,5 @@
 
 # Ignore csv files
 **/*.csv
+*.iml
+*.xml

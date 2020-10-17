@@ -6,6 +6,7 @@ from ev3dev2.led import Leds
 from ev3dev2.sound import Sound
 from datetime import datetime, timedelta
 import time
+import threading
 
 
 class Robot:
@@ -14,10 +15,14 @@ class Robot:
     and the tank drive, and it sets up the sensors. On top of that it provides functions so that the robot can be
     controlled.
     """
-    def __init__(self):
+    def __init__(self, bluetooth=None):
         """
         Initializer for a Robot.
         """
+        self.bluetooth = bluetooth
+        if bluetooth:
+            self.bluetooth.initiate_connection()
+            print('connected')
         self.cs = ColorSensor()
         self.left_touch = TouchSensor('ev3-ports:in1')
         self.right_touch = TouchSensor('ev3-ports:in4')
@@ -35,6 +40,14 @@ class Robot:
         :return: A tank_drive setup with the two motors, tire type and distance between tires.
         """
         return MoveDifferential(OUTPUT_A, OUTPUT_D, EV3EducationSetTire, 15 * STUD_MM)
+
+    def speak(self, text):
+        """
+        Speak in separate thread so it does not block anything.
+        """
+        threading.Thread(
+            target=lambda: self.sound.speak(text, Sound.PLAY_NO_WAIT_FOR_COMPLETE)
+        ).start()
 
     def setup_sensors(self):
         """
