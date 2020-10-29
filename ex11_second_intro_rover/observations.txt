@@ -1,0 +1,36 @@
+Description:
+    Not much changed in terms of the structure compared to last week. We still have a Robot,
+    Runner and Actions. The runner takes a Robot and a list of Actions (each with their own
+    priority), and executes the Actions in order of priority. We added a DriveAction, which
+    basically tells the Robot to always attempt to drive unless another action wants to be
+    executed. This is implemented by giving the DriveAction the lowest priority of all
+    actions in "main.py".
+
+    We also added a ColordetAction, which tells the Robot to detect a list of given colors.
+    After it has detected these colors, the Robot stops everything and gives a signal.
+    With the Bluetooth implementation (next paragraph), two Robots can also be initialized
+    and initialize a bluetooth connection with each other. In this case, the ColorDetaction
+    tries to find the list of given colors through both Robots: if one Robot finds a color,
+    it is signaled to the other Robot too. They basically "share" the list of colors they
+    need to find, and once one Robot finds a color, the other one does not need to anymore.
+    Both Robots stop and give of a signal once all colors have been found.
+
+    Bluetooth is implemented as an option for the Robots. For a bluetooth connection to be
+    properly initialized, both a BluetoothMaster and a BluetoothSlave need to exist (or put
+    differently, a Robot with a BluetoothMaster property and a Robot with a BluetoothSlave
+    property), and the BluetoothMaster should be started first so that the BluetoothSlave
+    can connect to its network.
+
+    Lastly, "main.py" now contains a "create_runner" function that takes "True", "False" or
+    "None", where "True" returns a Robot with the BluetoothMaster property, "False" returns
+    a Robot with the "BluetoothSlave" property and "None" returns a Robot without a bluetooth
+    property.
+
+Observations:
+    Currently, our way of stopping all actions is by signaling that the Robot(s) has / have
+    found all colors for a very long time. However, this does not look like a permanent
+    solution to us. Although they stop for a long time, eventually (after for example 20
+    minutes) the Robot(s) will resume its / their Actions again.
+
+    It is important to note that we used ev3dev2simulator instead of the real Robot, allowing
+    us much more precision (and thus possibly less bugs) than a real Robot might allow.
