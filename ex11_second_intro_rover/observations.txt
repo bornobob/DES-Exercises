@@ -34,3 +34,6 @@ Observations:
 
     It is important to note that we used ev3dev2simulator instead of the real Robot, allowing
     us much more precision (and thus possibly less bugs) than a real Robot might allow.
+    More specific than that too, from what we understand the way bluetooth works in the
+    ev3dev2simulator is quite significantly different from the way it works with the actual
+    Robots, and thus our solution is likely not to work right off the bat with those.
