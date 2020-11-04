@@ -1,0 +1,7 @@
+/bin/
+.antlr-generator-*-patch.jar
+.settings/
+src-gen/
+xtend-gen/
+model/
+.launch/

@@ -1,0 +1,39 @@
+grammar gameoflife.Gol with org.eclipse.xtext.common.Terminals
+
+generate gol "http://www.Gol.gameoflife"
+
+
+TotalRules:
+	'On:' onRules+=Rule*
+	'Off:' offRules+=Rule*
+	('Else:' elseRule=ElseRule)?
+;
+
+Rule:
+	'if' 
+	'total'
+	op = Operator 
+	compareValue = INT 
+	'then' 'result' 'is'
+	onOff = OnOff	
+;
+
+ElseRule:
+	onOffCur = OnOffCurrent
+;
+
+enum Operator:
+	LT = '<' |
+	GT = '>' |
+	EQ = '=' |
+	LEQ = '<=' |
+	GEQ = '>='
+;
+
+enum OnOff:
+	ON | OFF
+;
+
+enum OnOffCurrent:
+	ON | OFF | CURRENT
+;
