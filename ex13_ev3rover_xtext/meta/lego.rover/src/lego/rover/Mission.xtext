@@ -1,0 +1,52 @@
+grammar lego.rover.Mission with org.eclipse.xtext.common.Terminals
+
+generate mission "http://www.rover.lego/Mission"
+
+Simulation:
+	'Missions' missions = Missions
+	'Robots' robots = Robots
+;
+
+Robots:
+	robots += Robot+
+;
+
+Robot:
+	name = ID ':'
+	mission = ID
+;
+
+Missions:
+	missions += Mission+
+;
+
+Mission:
+	name = ID ':'
+	actions += Action*
+;
+
+Action:
+	type = ActionType
+	(priority = Priority)?
+	(arguments = Args)?
+;
+
+Priority:
+	'Priority' priority = INT
+;
+
+Args:
+	'Arguments' '[' arguments += Arg+ ']'
+;
+
+Arg:
+	'(' var = STRING '=' val = STRING ')'
+;
+
+enum ActionType:
+	BorderAction |
+	CollisionAction |
+	ColorDetAction |
+	DriveAction |
+	UltrasoundAction 
+;

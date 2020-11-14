@@ -1,0 +1,10 @@
+Missions
+ ToTheMoon: BorderAction
+ 			Priority 1
+ 			Arguments [("a" = "1") ("a" = "2")]
+ ToTheMoon2: BorderAction 
+   			 Priority 1
+   			 Arguments [("a" = "2") ("a" = "1")]
+
+Robots
+ Bot2: ToTheMoon
