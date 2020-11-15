@@ -1,0 +1,20 @@
+Observations:
+    
+    In the case of multiple errors or warnings, it seems like the Validator sometimes gets caught up and does a
+    validation check at an incorrect place. Unfortunately, we have not yet found out how to fix this. 
+    
+    Due to the nature of our Robot codebase, a Robot needs a driveAction to do something at all, as a sort of 
+    default. This is not implemented in the grammar yet, but is a relatively easy extension (given some time).
+    
+    We have not yet found a proper way to work around the automatic newlines Xtend adds when calling a new
+    generator function. Putting the whole function on one line works, but that is unreadable.
+    
+    Our grammer currently supports defining multiple robots, but the code generation does not (yet). This is 
+    something we would like to extend to soon (including bluetooth support).
+    
+Description:
+    
+    Our DSL generates errors for when two different missions share the same name, and likewise for robots.
+    It also gives an error when a robot has a non-valid mission and when the arguments are invalid for the 
+    action to which they are bound. Lastly, it gives a warning when two missions with different names 
+    have the exact same actions, warning the user for duplication.

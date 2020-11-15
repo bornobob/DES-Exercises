@@ -3,9 +3,19 @@
  */
 package lego.rover.validation;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.xtext.validation.Check;
 
-import lego.rover.mission.*;
+import lego.rover.mission.Action;
+import lego.rover.mission.Arg;
+import lego.rover.mission.Args;
+import lego.rover.mission.Mission;
+import lego.rover.mission.Missions;
+import lego.rover.mission.Robot;
+import lego.rover.mission.Robots;
+import lego.rover.mission.Simulation;
 
 /**
  * This class contains custom validation rules. 
@@ -13,9 +23,25 @@ import lego.rover.mission.*;
  * See https://www.eclipse.org/Xtext/documentation/303_runtime_concepts.html#validation
  */
 public class MissionValidator extends AbstractMissionValidator {
+	@Check
+	public void checkValidMissionNames(Simulation sim) {
+		List<String> missionNames = new ArrayList<String>();
+		if (sim.getMissions() != null && sim.getMissions().getMissions() != null) {
+			for (int i = 0; i < sim.getMissions().getMissions().size(); i++) {
+				missionNames.add(sim.getMissions().getMissions().get(i).getName());
+			}
+		}
+		
+		if (sim.getRobots() != null && sim.getRobots().getRobots() != null) {
+			for (int i = 0; i < sim.getRobots().getRobots().size(); i++) {
+				if (!missionNames.contains(sim.getRobots().getRobots().get(i).getMission())) { 
+					error("Mission name \"" + sim.getRobots().getRobots().get(i).getMission() + "\"" +
+						  "is used but is not defined!", null);
+				}
+			}
+		}
+	}
 	
-	public static final String INVALID_NAME = "invalidName";
-
 	@Check
 	public void checkDuplicateMissionNames(Missions missions) {
 		System.out.println("HERE");
@@ -68,6 +94,20 @@ public class MissionValidator extends AbstractMissionValidator {
 				}
 			}
 		}
+	}
+	
+	@Check
+	public void checkValidActionArgs(Action action) {
+		if (action.getArguments() != null && action.getArguments().getArguments().size() > 0) {
+			List<String> validArgs = Auxiliary.ValidArgs(action.getType());
+			for (int i = 0; i < action.getArguments().getArguments().size(); i++) {
+				if (!validArgs.contains(action.getArguments().getArguments().get(i).getVar())) {
+					error("Action \"" + action.getType().toString() + "\" does not have argument \"" + 
+						  action.getArguments().getArguments().get(i).getVar() + "\"", null);
+				}
+			}
+		}
+		
 	}
 	
 }

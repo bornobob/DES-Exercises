@@ -1,21 +1,16 @@
-from actions import *
+"""from actions import *
 from runner import Runner
 from robot import Robot
-from ev3dev2.sensor.lego import ColorSensor
+
 from utils import *
 
 
 MAC_ADDRESS = '00:1a:7d:da:71:10'  # Mac address via which the Robots connect with bluetooth
 PORT = 4  # Port on which the Robots connect with bluetooth
-COLORS = [ColorSensor.COLOR_RED, ColorSensor.COLOR_YELLOW, ColorSensor.COLOR_BLUE]  # List of colors to be detected
+
 
 
 def create_runner(master=None):
-    """
-    Creates a running thread of a Robot, either a bluetooth master or slave and initializes all the actions it can take.
-    :param master: True if the Robot is a bluetooth master device, False if it is a bluetooth slave device. None if
-    no bluetooth is required.
-    """
     if master:
         r = Robot(BluetoothMaster(MAC_ADDRESS, PORT))
     elif master is not None:
@@ -32,3 +27,21 @@ def create_runner(master=None):
 
 if __name__ == '__main__':
     create_runner()
+"""
+from actions import *
+from runner import Runner
+from robot import Robot
+
+
+def create_runner():
+	r = Robot()
+	mission_ToTheMoon = [DriveAction(priority=0), BorderAction(priority=1)]
+	mission_ToTheMoon2 = [DriveAction(priority=0), BorderAction(priority=1, rotate_degrees=.5)]
+	mission_AllTheColours = [DriveAction(priority=0), BorderAction(priority=10), UltrasoundAction(priority=5), ColorDetAction(priority=3, colors=[5, 4, 2])]
+	mission_AllTheColoursButFaster = [DriveAction(priority=0, speed=80), BorderAction(priority=10), UltrasoundAction(priority=5), ColorDetAction(priority=3, colors=[5, 4, 2])]
+	Runner(r, mission_ToTheMoon).run()
+
+
+if __name__ == '__main__':
+	create_runner()
+

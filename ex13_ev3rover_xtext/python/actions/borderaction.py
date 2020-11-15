@@ -6,9 +6,13 @@ class BorderAction(BaseAction):
     """
     The BorderAction tries to keep the Robot within a black drawn border.
     """
+    def __init__(self, priority, rotate_degrees=.3):
+        super().__init__(priority)
+        self.rotate_degrees = rotate_degrees
+
     def check(self):
         return self.robot.cs.color == ColorSensor.COLOR_BLACK
 
     def _do_action(self):
         self.robot.tank_drive.stop()
-        self.robot.rotate_degrees(.3, lock=self.lock)
+        self.robot.rotate_degrees(self.rotate_degrees, lock=self.lock)

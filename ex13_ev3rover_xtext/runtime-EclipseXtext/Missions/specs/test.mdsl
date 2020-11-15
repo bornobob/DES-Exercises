@@ -1,10 +1,36 @@
 Missions
- ToTheMoon: BorderAction
+ ToTheMoon: DriveAction 
+ 			
+ 			BorderAction
  			Priority 1
- 			Arguments [("a" = "1") ("a" = "2")]
- ToTheMoon2: BorderAction 
-   			 Priority 1
-   			 Arguments [("a" = "2") ("a" = "1")]
 
+ ToTheMoon2: DriveAction 
+ 			
+ 			 BorderAction
+ 			 Arguments [("rotate_degrees" = ".5")]
+
+ AllTheColours: DriveAction
+ 
+                BorderAction
+                Priority 10
+                
+                UltrasoundAction
+                Priority 5
+                
+                ColorDetAction 
+                // 5 = red, 4 = yellow, 3 = blue (same as ColorSensor.COLOR_*)
+                Arguments [("colors" = "[5, 4, 2]")]
+                
+ AllTheColoursButFaster: DriveAction
+                         Arguments [("speed" = "80")]
+                         
+                         BorderAction
+			             Priority 10
+			                
+			             UltrasoundAction
+			             Priority 5
+			                
+			             ColorDetAction 
+			             Arguments [("colors" = "[5, 4, 2]")]
 Robots
  Bot2: ToTheMoon

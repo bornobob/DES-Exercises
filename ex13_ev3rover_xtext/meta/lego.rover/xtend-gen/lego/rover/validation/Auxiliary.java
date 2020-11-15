@@ -13,6 +13,22 @@ import org.eclipse.xtext.xbase.lib.IterableExtensions;
 
 @SuppressWarnings("all")
 public class Auxiliary {
+  public static List<String> ValidArgs(final ActionType type) {
+    ArrayList<String> res = new ArrayList<String>();
+    if (((Objects.equal(type, ActionType.BORDER_ACTION) || Objects.equal(type, ActionType.COLLISION_ACTION)) || Objects.equal(type, ActionType.ULTRASOUND_ACTION))) {
+      res.add("rotate_degrees");
+    }
+    boolean _equals = Objects.equal(type, ActionType.DRIVE_ACTION);
+    if (_equals) {
+      res.add("speed");
+    }
+    boolean _equals_1 = Objects.equal(type, ActionType.COLOR_DET_ACTION);
+    if (_equals_1) {
+      res.add("colors");
+    }
+    return res;
+  }
+  
   public static boolean EqualUpToRenaming(final Mission a, final Mission b) {
     int _size = a.getActions().size();
     int _size_1 = b.getActions().size();

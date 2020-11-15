@@ -6,8 +6,23 @@ import lego.rover.mission.Action
 import lego.rover.mission.Arg
 import lego.rover.mission.Args
 import lego.rover.mission.Mission
+import lego.rover.mission.ActionType
 
 class Auxiliary {	
+	def static List<String> ValidArgs(ActionType type) {
+		var res = new ArrayList<String>();
+		if (type == ActionType.BORDER_ACTION || type == ActionType.COLLISION_ACTION || type == ActionType.ULTRASOUND_ACTION) {
+			res.add("rotate_degrees");
+		} 
+		if (type == ActionType.DRIVE_ACTION) {
+			res.add("speed");
+		}
+		if (type == ActionType.COLOR_DET_ACTION) {
+			res.add("colors");
+		}
+		return res;
+	}	
+	
 	def static boolean EqualUpToRenaming(Mission a, Mission b) {
 		if (a.getActions().size() != b.getActions().size()) return false;
 		
