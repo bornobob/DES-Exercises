@@ -7,6 +7,7 @@ from ev3dev2.sound import Sound
 from datetime import datetime, timedelta
 import time
 import threading
+from utils import BluetoothMaster, Data
 
 
 class Robot:
@@ -23,6 +24,8 @@ class Robot:
         if bluetooth:
             self.bluetooth.initiate_connection()
             print('connected')
+            if isinstance(bluetooth, BluetoothMaster):
+                self.database = bluetooth.get_database()
         self.cs = ColorSensor()
         self.left_touch = TouchSensor('ev3-ports:in1')
         self.right_touch = TouchSensor('ev3-ports:in4')

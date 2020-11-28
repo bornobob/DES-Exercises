@@ -1,5 +1,7 @@
 from queue import Queue
 import threading
+from utils.bluetoothmessage import BluetoothMessage
+from utils.data import Data
 
 
 class Bluetooth:
@@ -19,9 +21,17 @@ class Bluetooth:
         self.server_mac = server_mac
         self.port = port
         self.queue = Queue()
+        self.database = Data()
         self.socket = None
         self.out_sock = None
         self.in_sock = None
+
+    def get_database(self):
+        """
+        Gets the database of the bluetooth class.
+        """
+        return self.database
+        
 
     def disconnect(self):
         """
@@ -35,15 +45,15 @@ class Bluetooth:
         Listens to incoming messages on a socket. Puts the message in a queue.
         """
         while True:
-            color = int(self.in_sock.readline())
-            self.queue.put(color)
+            message = self.in_sock.readline()
+            self.database.put(BluetoothMessage.read_message(message))
 
-    def write(self, data):
+    def write(self, message):
         """
         Sends a message through the socket via bluetooth.
-        :param data: The data to be sent over bluetooth.
+        :param message: The BluetoothMessage to be sent over bluetooth.
         """
-        self.out_sock.write(str(data) + '\n')
+        self.out_sock.write(str(message) + '\n')
         self.out_sock.flush()
 
     def connect(self):
