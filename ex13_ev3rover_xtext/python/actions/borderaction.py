@@ -11,8 +11,8 @@ class BorderAction(BaseAction):
         self.rotate_degrees = rotate_degrees
 
     def check(self):
-        return self.robot.cs.color == ColorSensor.COLOR_BLACK
+        return self.robot.sensormap.cs_l.color == ColorSensor.COLOR_WHITE
 
     def _do_action(self):
-        self.robot.tank_drive.stop()
+        self.robot.sensormap.tank_drive.stop()
         self.robot.rotate_degrees(self.rotate_degrees, lock=self.lock)

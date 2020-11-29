@@ -16,7 +16,7 @@ class Robot:
     and the tank drive, and it sets up the sensors. On top of that it provides functions so that the robot can be
     controlled.
     """
-    def __init__(self, bluetooth=None):
+    def __init__(self, sensormap, bluetooth=None):
         """
         Initializer for a Robot.
         """
@@ -26,23 +26,9 @@ class Robot:
             print('connected')
             if isinstance(bluetooth, BluetoothMaster):
                 self.database = bluetooth.get_database()
-        self.cs = ColorSensor()
-        self.left_touch = TouchSensor('ev3-ports:in1')
-        self.right_touch = TouchSensor('ev3-ports:in4')
-        self.us = UltrasonicSensor()
-        self.tank_drive = Robot.get_tank_drive()
+        self.sensormap = sensormap
         self.sound = Sound()
         self.leds = Leds()
-        self.setup_sensors()
-
-    @staticmethod
-    def get_tank_drive():
-        """
-        Loads the setup of the motors of a Robot. Contains the motor outputs, the type of tire and
-        the distance between the two wheels of the robot.
-        :return: A tank_drive setup with the two motors, tire type and distance between tires.
-        """
-        return MoveDifferential(OUTPUT_A, OUTPUT_D, EV3EducationSetTire, 15 * STUD_MM)
 
     def speak(self, text):
         """
@@ -52,18 +38,12 @@ class Robot:
             target=lambda: self.sound.speak(text, Sound.PLAY_NO_WAIT_FOR_COMPLETE)
         ).start()
 
-    def setup_sensors(self):
-        """
-        Sets up the "modes" of the sensors. For example sets the ultrasonic sensor to continuous centimeter measurement.
-        """
-        self.us.mode = UltrasonicSensor.MODE_US_DIST_CM  # continuous centimeter measurement
-
     def start_drive(self, speed_percentage=40):
         """
         Activates the motors of the robot to move forward.
         :param speed_percentage: The speed of the Robot based on motor power. Percentage between 0 and 100.
         """
-        self.tank_drive.on(SpeedPercent(speed_percentage), SpeedPercent(speed_percentage))
+        self.sensormap.tank_drive.on(SpeedPercent(speed_percentage), SpeedPercent(speed_percentage))
 
     def reverse_for_rotations(self, nr_rotations, rpm=60, lock=None):
         """
@@ -72,11 +52,11 @@ class Robot:
         :param rpm: Speed at which the Robot reverses in rotations per minute.
         :param lock: Optional Lock to stop the operation when requested
         """
-        self.tank_drive.on_for_rotations(SpeedRPM(-rpm), SpeedRPM(-rpm), nr_rotations, block=False)
+        self.sensormap.tank_drive.on_for_rotations(SpeedRPM(-rpm), SpeedRPM(-rpm), nr_rotations, block=False)
         end_time = datetime.now() + timedelta(seconds=(nr_rotations*60)/rpm)
         while datetime.now() < end_time:
             if lock.is_locked():
-                self.tank_drive.stop()
+                self.sensormap.tank_drive.stop()
                 break
             time.sleep(0.01)
 
@@ -88,11 +68,11 @@ class Robot:
         :param rpm: The speed to turn at.
         :param lock: Optional Lock to stop the operation when requested.
         """
-        self.tank_drive.on_for_rotations(SpeedRPM(rpm), SpeedRPM(-rpm), abs(rotations), block=False)
+        self.sensormap.tank_drive.on_for_rotations(SpeedRPM(rpm), SpeedRPM(-rpm), abs(rotations), block=False)
         end_time = datetime.now() + timedelta(seconds=(abs(rotations)*60)/abs(rpm))
         while datetime.now() < end_time:
             if lock.is_locked():
-                self.tank_drive.stop()
+                self.sensormap.tank_drive.stop()
                 break
             time.sleep(0.01)
 

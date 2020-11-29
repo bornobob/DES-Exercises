@@ -44,7 +44,6 @@ class Runner:
         Sorts the actions in the list of coupled Robot actions by their priority and continuously performs those actions
         in that order.
         """
-        self.robot.start_drive()
         current_action = None
         sorted_actions = list(sorted(self.actions, key=lambda x: -x.priority))
         while True:
