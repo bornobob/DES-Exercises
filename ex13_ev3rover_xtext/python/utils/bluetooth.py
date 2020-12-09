@@ -1,4 +1,3 @@
-from queue import Queue
 import threading
 from utils.bluetoothmessage import BluetoothMessage
 from utils.data import Data
@@ -20,7 +19,6 @@ class Bluetooth:
         """
         self.server_mac = server_mac
         self.port = port
-        self.queue = Queue()
         self.database = Data()
         self.socket = None
         self.out_sock = None
@@ -42,7 +40,7 @@ class Bluetooth:
 
     def listen(self):
         """
-        Listens to incoming messages on a socket. Puts the message in a queue.
+        Listens to incoming messages on a socket. Puts the message in a database.
         """
         while True:
             message = self.in_sock.readline()
