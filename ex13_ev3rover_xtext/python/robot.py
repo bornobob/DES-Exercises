@@ -86,4 +86,6 @@ class Robot:
         """
         if reverse_before_continue:
             self.reverse_for_rotations(.6, lock=lock)
-        self.turn_for_rotations(rotations, rpm=rpm, lock=lock)
+        if rotations < 0:
+            rpm *= -1
+        self.turn_for_rotations(abs(rotations), rpm=rpm, lock=lock)
