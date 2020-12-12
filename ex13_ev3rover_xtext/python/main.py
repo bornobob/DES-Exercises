@@ -1,4 +1,4 @@
-from actions import DriveAction, BorderAction, CollisionAction, UltrasoundAction
+from actions import DriveAction, BorderAction, CollisionAction, UltrasoundAction, MeasureAction, DontDrownAction
 from runner import Runner
 from ev3dev2.unit import STUD_MM
 from robot import Robot
@@ -18,11 +18,13 @@ sensor_map_master = {'tank_drive': MoveDifferential(OUTPUT_A, OUTPUT_D, EV3Educa
 
 def create_runner():
 	r = Robot(SensorMap(sensor_map_master), bluetooth=BluetoothMaster(MAC_ADDRESS, PORT))
-	mission_ToTheMoon = [DriveAction(priority=0), 
-						 CollisionAction(priority=1),
-						 UltrasoundAction(priority=2),
-					     BorderAction(priority=3)]
-	Runner(r, mission_ToTheMoon).run()
+	mission_ToTheMoonAndBeyond = [DriveAction(priority=0), 
+						 		  CollisionAction(priority=2),
+						 		  UltrasoundAction(priority=8),
+					     		  BorderAction(priority=10),
+								  DontDrownAction(priority=5, lakes=[ColorSensor.COLOR_RED, ColorSensor.COLOR_BLUE, ColorSensor.COLOR_YELLOW]),
+						 		  MeasureAction(priority=6, colors=[ColorSensor.COLOR_RED, ColorSensor.COLOR_BLUE, ColorSensor.COLOR_YELLOW])]
+	Runner(r, mission_ToTheMoonAndBeyond).run()
 
 
 if __name__ == '__main__':

@@ -4,3 +4,5 @@ from actions.ultrasoundaction import UltrasoundAction
 from actions.driveaction import DriveAction
 from actions.colordetaction import ColorDetAction
 from actions.dataaction import DataAction
+from actions.measureaction import MeasureAction
+from actions.dontdrownaction import DontDrownAction
