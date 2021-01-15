@@ -7,9 +7,9 @@ class DataAction(BaseAction):
     """
     def __init__(self, priority, polling_rate=100):
         super().__init__(priority)
-        self.touch_b_start = False
-        self.touch_l_start = False
-        self.touch_r_start = False
+        self.touch_b_start = True
+        self.touch_l_start = True
+        self.touch_r_start = True
         self.start_time = time.time()
         self.polling_rate = polling_rate
 
