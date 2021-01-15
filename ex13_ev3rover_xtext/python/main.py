@@ -1,4 +1,5 @@
-from actions import DriveAction, BorderAction, CollisionAction, UltrasoundAction, MeasureAction, DontDrownAction
+from actions.measureaction import MeasureAction
+from actions import DriveAction, BorderAction, PushRockAction, DontDrownAction
 from runner import Runner
 from ev3dev2.unit import STUD_MM
 from robot import Robot
@@ -18,13 +19,15 @@ sensor_map_master = {'tank_drive': MoveDifferential(OUTPUT_A, OUTPUT_D, EV3Educa
 
 def create_runner():
 	r = Robot(SensorMap(sensor_map_master), bluetooth=BluetoothMaster(MAC_ADDRESS, PORT))
-	mission_ToTheMoonAndBeyond = [DriveAction(priority=0), 
-						 		  CollisionAction(priority=2),
-						 		  UltrasoundAction(priority=8),
+	mission_ToTheMoonAndBeyond = [DriveAction(priority=0),
+								  PushRockAction(priority=3, number_of_rocks=1),
 					     		  BorderAction(priority=10),
-								  DontDrownAction(priority=5, lakes=[ColorSensor.COLOR_RED, ColorSensor.COLOR_BLUE, ColorSensor.COLOR_YELLOW]),
-						 		  MeasureAction(priority=6, colors=[ColorSensor.COLOR_RED, ColorSensor.COLOR_BLUE, ColorSensor.COLOR_YELLOW])]
-	Runner(r, mission_ToTheMoonAndBeyond).run()
+								  DontDrownAction(priority=5, lakes=[ColorSensor.COLOR_RED, ColorSensor.COLOR_BLUE, ColorSensor.COLOR_YELLOW])]
+	mission_YeetRocks = [DriveAction(priority=0),
+						 MeasureAction(priority=5, colors=[ColorSensor.COLOR_RED]),
+						 BorderAction(priority=10),
+						 DontDrownAction(priority=3, lakes=[ColorSensor.COLOR_RED, ColorSensor.COLOR_BLUE, ColorSensor.COLOR_YELLOW])]
+	Runner(r, [mission_ToTheMoonAndBeyond, mission_YeetRocks]).run()
 
 
 if __name__ == '__main__':

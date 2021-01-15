@@ -1,25 +1,25 @@
 import time
+from actions.goalaction import GoalAction
 
 
 class Runner:
     """
     The runner is the class that executes the actions of a Robot.
     """
-    def __init__(self, robot, actions):
+    def __init__(self, robot, missions):
         """
         Initializer for a Runner.
         :param robot: The Robot that we want to control.
-        :param actions: The list of actions that the Robot can perform.
+        :param missions: The list of list of actions that the Robot must perform.
         """
         self.robot = robot
-        self.actions = actions
-        self.couple_robot_to_actions()
+        self.missions = missions
 
-    def couple_robot_to_actions(self):
+    def couple_robot_to_actions(self, mission):
         """
         Couples the list of actions to the Robot, coupling the actions to the sensors the Robot has at its disposal.
         """
-        for a in self.actions:
+        for a in mission:
             a.set_robot(self.robot)
 
     @staticmethod
@@ -44,15 +44,22 @@ class Runner:
         Sorts the actions in the list of coupled Robot actions by their priority and continuously performs those actions
         in that order.
         """
-        current_action = None
-        sorted_actions = list(sorted(self.actions, key=lambda x: -x.priority))
-        while True:
-            for a in sorted_actions:
-                if a.check():
-                    if Runner.action_may_run(a, current_action):
-                        if current_action and current_action.is_running():
-                            current_action.kill()
-                        a.action()
-                        current_action = a
+        for mission in self.missions:
+            self.couple_robot_to_actions(mission)
+            current_action = None
+            sorted_actions = list(sorted(mission, key=lambda x: -x.priority))
+            passed_mission = False
+            while not passed_mission:
+                for a in sorted_actions:
+                    if isinstance(a, GoalAction) and a.goal_reached():
+                        passed_mission = True
+                        self.robot.sensormap.tank_drive.stop()
                         break
-            time.sleep(.1)
+                    if a.check():
+                        if Runner.action_may_run(a, current_action):
+                            if current_action and current_action.is_running():
+                                current_action.kill()
+                            a.action()
+                            current_action = a
+                            break
+                time.sleep(.1)

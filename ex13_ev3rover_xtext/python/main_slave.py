@@ -12,7 +12,7 @@ sensor_map_slave = {'ts_b': TouchSensor('ev3-ports:in1'), 'ts_l': TouchSensor('e
 
 def create_runner():
 	r = Robot(SensorMap(sensor_map_slave), bluetooth=BluetoothSlave(MAC_ADDRESS, PORT))
-	Runner(r, [DataAction(1, polling_rate=250)]).run()
+	Runner(r, [[DataAction(1, polling_rate=250)]]).run()
 
 
 if __name__ == '__main__':
