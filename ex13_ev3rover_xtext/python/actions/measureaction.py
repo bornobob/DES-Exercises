@@ -16,37 +16,36 @@ class MeasureAction(GoalAction):
 
     def check(self):
         sensor_values = [self.robot.sensormap.cs_l.color,
-                         self.robot.sensormap.cs_r.color,
-                         self.robot.sensormap.cs_m.color]
-        number_per_color = [sum(1 if v == c and c not in self.detected else 0 for v in sensor_values) for c in self.colors]
-        if list(filter(lambda x: x > 1, number_per_color)):
-            self.detected_with_center = False
-            return True
-        elif self.robot.sensormap.cs_m.color in self.colors and \
-             self.robot.sensormap.cs_m.color not in self.detected:
-            self.detected_with_center = True
-            return True
-        return False
+                         self.robot.sensormap.cs_r.color]
+        return any(s in self.colors and not s in self.detected for s in sensor_values)
 
-    def align_from_2_sensors(self):
+    def align(self):
         # Align the robot to be able to perform a measurement
-        while self.robot.sensormap.cs_l.color != self.robot.sensormap.cs_r.color:
+        bounces = 0  # keep track of alignment bounces
+        # when we reach more than three bounces, we agree that the robot is sufficiently aligned
+        # iff two out of three sensors show a non black color
+        # otherwise, the left and right sensors have to show the same non black color
+        while not (self.robot.sensormap.cs_l.color == self.robot.sensormap.cs_r.color and self.robot.sensormap.cs_l.color != ColorSensor.COLOR_BLACK) and \
+              not (bounces > 3 and self.robot.sensormap.cs_l.color == self.robot.sensormap.cs_m.color and self.robot.sensormap.cs_l.color != ColorSensor.COLOR_BLACK) and \
+              not (bounces > 3 and self.robot.sensormap.cs_r.color == self.robot.sensormap.cs_m.color and self.robot.sensormap.cs_r.color != ColorSensor.COLOR_BLACK): 
             if self.robot.sensormap.cs_l.color == ColorSensor.COLOR_BLACK:
                 # the left sensor measures black, meaning we should rotate right a bit
-                self.robot.rotate_degrees(.025, reverse_before_continue=False, rpm=5, lock=self.lock)
+                # we rotate right until the right color sensor is no longer black
+                while self.robot.sensormap.cs_r.color != ColorSensor.COLOR_BLACK:
+                    self.robot.rotate_degrees(.005, reverse_before_continue=False, rpm=5, lock=self.lock)
             else:
                 # the right sensor measures black, meaning we should rotate left a bit
-                self.robot.rotate_degrees(-.025, reverse_before_continue=False, rpm=5, lock=self.lock)
-        while self.robot.sensormap.cs_m.color == ColorSensor.COLOR_BLACK and \
-              (self.robot.sensormap.cs_l.color in self.colors or \
-               self.robot.sensormap.cs_r.color in self.colors):
+                # we rotate left until the left color sensor is no longer black
+                while self.robot.sensormap.cs_l.color != ColorSensor.COLOR_BLACK:
+                    self.robot.rotate_degrees(-.005, reverse_before_continue=False, rpm=5, lock=self.lock)
+            while self.robot.sensormap.cs_l.color == ColorSensor.COLOR_BLACK and self.robot.sensormap.cs_r.color == ColorSensor.COLOR_BLACK:
+                # now we drive forward until either of the left or right color sensor is a non black color
+                self.robot.reverse_for_rotations(-0.02, rpm=5, lock=self.lock)
+            bounces += 1
+        while self.robot.sensormap.cs_m.color == ColorSensor.COLOR_BLACK:
+            # finally, if the middle sensor is black, we reverse until it is not
             self.robot.reverse_for_rotations(.05, rpm=5, lock=self.lock)
 
-    def align_from_center(self):
-        while self.robot.sensormap.cs_l.color != self.robot.sensormap.cs_m.color or \
-              self.robot.sensormap.cs_r.color != self.robot.sensormap.cs_m.color:
-            self.robot.reverse_for_rotations(-.05, rpm=5, lock=self.lock)
-    
     def get_lake_color(self):
         if self.robot.sensormap.cs_l.color in self.colors:
             return self.robot.sensormap.cs_l.color
@@ -58,10 +57,7 @@ class MeasureAction(GoalAction):
 
     def _do_action(self):
         self.robot.sensormap.tank_drive.stop()
-        if self.detected_with_center:
-            self.align_from_center()
-        else:
-            self.align_from_2_sensors()
+        self.align()
         # Now we know we are aligned
         self.robot.sensormap.measurement_motor.on_for_rotations(SpeedRPM(-5), .3)
         if self.get_lake_color():
