@@ -65,6 +65,5 @@ class Bluetooth:
         Initiates the bluetooth connection as master or slave. Creates a separate thread to listen to incoming messages.
         """
         self.socket, self.in_sock, self.out_sock = self.connect()
-        print('after connect:', self.socket, self.in_sock, self.out_sock)
         listener = threading.Thread(target=self.listen)
         listener.start()
