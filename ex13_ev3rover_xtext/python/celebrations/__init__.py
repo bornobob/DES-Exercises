@@ -1,0 +1,2 @@
+from celebrations.dancecelebration import DanceCelebration
+from celebrations.speak import SpeakCelebration

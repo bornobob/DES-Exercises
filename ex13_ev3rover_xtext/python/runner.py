@@ -10,16 +10,16 @@ class Runner:
         """
         Initializer for a Runner.
         :param robot: The Robot that we want to control.
-        :param missions: The list of list of actions that the Robot must perform.
+        :param missions: The list of missions that the Robot must perform.
         """
         self.robot = robot
         self.missions = missions
 
     def couple_robot_to_actions(self, mission):
         """
-        Couples the list of actions to the Robot, coupling the actions to the sensors the Robot has at its disposal.
+        Couples a mission to the Robot, coupling the actions to the sensors the Robot has at its disposal.
         """
-        for a in mission:
+        for a in mission.actions:
             a.set_robot(self.robot)
 
     @staticmethod
@@ -47,13 +47,15 @@ class Runner:
         for mission in self.missions:
             self.couple_robot_to_actions(mission)
             current_action = None
-            sorted_actions = list(sorted(mission, key=lambda x: -x.priority))
+            sorted_actions = list(sorted(mission.actions, key=lambda x: -x.priority))
             passed_mission = False
             while not passed_mission:
                 for a in sorted_actions:
                     if isinstance(a, GoalAction) and a.goal_reached():
                         passed_mission = True
                         self.robot.sensormap.tank_drive.stop()
+                        if mission.celebratory_action:
+                            mission.celebrate(self.robot)
                         break
                     if a.check():
                         if Runner.action_may_run(a, current_action):
