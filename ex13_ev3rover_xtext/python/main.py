@@ -33,7 +33,13 @@ def create_runner():
 		 BorderAction(priority=10),
 		 DontDrownAction(priority=3, lakes=[ColorSensor.COLOR_RED, ColorSensor.COLOR_BLUE, ColorSensor.COLOR_YELLOW])],
 		SpeakCelebration('Wee I\'ve never been happier in my life'))
-	Runner(r, [mission_YeetRocks]).run()
+	mission_FindColours = Mission(
+		[DriveAction(priority=0),
+		 ColorDetAction(priority=5, colors=[ColorSensor.COLOR_RED, ColorSensor.COLOR_BLUE]),
+		 BorderAction(priority=10),
+		 DontDrownAction(priority=3, lakes=[ColorSensor.COLOR_RED, ColorSensor.COLOR_BLUE, ColorSensor.COLOR_YELLOW])],
+		DanceCelebration())
+	Runner(r, [mission_FindColours]).run()
 
 
 if __name__ == '__main__':
