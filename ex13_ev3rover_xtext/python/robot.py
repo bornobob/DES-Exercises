@@ -55,7 +55,7 @@ class Robot:
         self.sensormap.tank_drive.on_for_rotations(SpeedRPM(-rpm), SpeedRPM(-rpm), nr_rotations, block=False)
         end_time = datetime.now() + timedelta(seconds=(nr_rotations*60)/rpm)
         while datetime.now() < end_time:
-            if lock.is_locked():
+            if lock and lock.is_locked():
                 self.sensormap.tank_drive.stop()
                 break
             time.sleep(0.01)
@@ -71,7 +71,7 @@ class Robot:
         self.sensormap.tank_drive.on_for_rotations(SpeedRPM(rpm), SpeedRPM(-rpm), abs(rotations), block=False)
         end_time = datetime.now() + timedelta(seconds=(abs(rotations)*60)/abs(rpm))
         while datetime.now() < end_time:
-            if lock.is_locked():
+            if lock and lock.is_locked():
                 self.sensormap.tank_drive.stop()
                 break
             time.sleep(0.01)
