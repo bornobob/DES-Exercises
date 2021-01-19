@@ -1,16 +1,17 @@
-from actions import *
-from runner import Runner
-from robot import Robot
+import subprocess
+import time
 
 
-def create_runner():
-	r = Robot()
-	mission_ToTheMoon = [DriveAction(priority=0), BorderAction(priority=1)]
-	mission_ToTheMoon2 = [DriveAction(priority=0), BorderAction(priority=1, rotate_degrees=.5)]
-	mission_AllTheColours = [DriveAction(priority=0), BorderAction(priority=10), UltrasoundAction(priority=5), ColorDetAction(priority=3, colors=[5, 4, 2])]
-	mission_AllTheColoursButFaster = [DriveAction(priority=0, speed=80), BorderAction(priority=10), UltrasoundAction(priority=5), ColorDetAction(priority=3, colors=[5, 4, 2])]
-	Runner(r, mission_ToTheMoon).run()
+PYTHON_EXECUTABLE = 'python'
+BRICK_1_PY = 'main_main.py'
+BRICK_2_PY = 'main_slave.py'
 
 
-if __name__ == '__main__':
-	create_runner()
+if __name__ == "__main__":
+    proc1 = subprocess.Popen([PYTHON_EXECUTABLE, BRICK_1_PY])
+    time.sleep(1)
+    proc2 = subprocess.Popen([PYTHON_EXECUTABLE, BRICK_2_PY])
+
+    input('Press [enter] to stop the simulation')
+    proc2.kill()
+    proc1.kill()

@@ -2,51 +2,108 @@ grammar lego.rover.Mission with org.eclipse.xtext.common.Terminals
 
 generate mission "http://www.rover.lego/Mission"
 
-Simulation:
-	'Missions' missions = Missions
-	'Robots' robots = Robots
-;
-
-Robots:
-	robots += Robot+
-;
-
-Robot:
-	name = ID ':'
-	mission = ID
-;
-
 Missions:
 	missions += Mission+
 ;
 
 Mission:
 	name = ID ':'
-	actions += Action*
+	actions += Action+
+	('Celebration:' celebration = Celebration)?
+;
+
+Celebration:
+	DanceCelebration |
+	SpeakCelebration
+;
+
+DanceCelebration:
+	{DanceCelebration}
+	'Dance'
+;
+
+SpeakCelebration:
+	'Speak' toSpeak = STRING
 ;
 
 Action:
 	type = ActionType
 	(priority = Priority)?
-	(arguments = Args)?
 ;
 
 Priority:
-	'Priority' priority = INT
+	'Priority:' priority = INT
 ;
 
-Args:
-	'Arguments' '[' arguments += Arg+ ']'
-;
-
-Arg:
-	'(' var = STRING '=' val = STRING ')'
-;
-
-enum ActionType:
+ActionType:
 	BorderAction |
 	CollisionAction |
 	ColorDetAction |
 	DriveAction |
-	UltrasoundAction 
+	UltrasoundAction |
+	DontDrownAction |
+	MeasureAction |
+	PushRockAction 
+;
+
+enum Boolean:
+	True = "true" | False = "false"
+;
+
+Rotation:
+	rotation = DECIMAL
+;
+
+enum Color:
+	Black | Blue | Green | Yellow | Red | White | Brown
+;
+
+DECIMAL: INT '.' INT;
+
+Speed:
+	speed = INT
+;
+
+PushRockAction:
+	'PushRocks' 'RocksToPush:' nr_rocks = INT
+;
+
+MeasureAction:
+	'MeasureLakes' 'LakeColors:' '[' colors += Color+ ']'
+;
+
+DontDrownAction:
+	'DontDrown'
+	'LakeColors:' '[' colors += Color+ ']'
+	('Rotations:' rotation = Rotation)?
+;
+
+DriveAction:
+	{DriveAction}
+	'Drive'
+	('Speed:' speed = Speed)?
+;
+
+UltrasoundAction:
+	{UltrasoundAction}
+	'UltraSound'
+	('Rotations:' rotation = Rotation)?
+	('DodgeRocks:' dodgeRocks = Boolean)?
+;
+
+ColorDetAction:
+	'ColorDetection'
+	'Colors:' '[' colors += Color+ ']'
+;
+
+CollisionAction:
+	{CollisionAction}
+	'CollisionDetection'
+	('Rotations:' rotation = Rotation)?
+;
+
+BorderAction:
+	{BorderAction}
+	'BorderDetection'
+	('Rotations:' rotation = Rotation)?
 ;

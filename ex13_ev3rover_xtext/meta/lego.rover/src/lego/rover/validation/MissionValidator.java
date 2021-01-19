@@ -4,18 +4,14 @@
 package lego.rover.validation;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.HashMap;
 
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.xtext.validation.Check;
 
-import lego.rover.mission.Action;
-import lego.rover.mission.Arg;
-import lego.rover.mission.Args;
-import lego.rover.mission.Mission;
-import lego.rover.mission.Missions;
-import lego.rover.mission.Robot;
-import lego.rover.mission.Robots;
-import lego.rover.mission.Simulation;
+import lego.rover.mission.*;
 
 /**
  * This class contains custom validation rules. 
@@ -24,90 +20,344 @@ import lego.rover.mission.Simulation;
  */
 public class MissionValidator extends AbstractMissionValidator {
 	@Check
-	public void checkValidMissionNames(Simulation sim) {
-		List<String> missionNames = new ArrayList<String>();
-		if (sim.getMissions() != null && sim.getMissions().getMissions() != null) {
-			for (int i = 0; i < sim.getMissions().getMissions().size(); i++) {
-				missionNames.add(sim.getMissions().getMissions().get(i).getName());
-			}
-		}
-		
-		if (sim.getRobots() != null && sim.getRobots().getRobots() != null) {
-			for (int i = 0; i < sim.getRobots().getRobots().size(); i++) {
-				if (!missionNames.contains(sim.getRobots().getRobots().get(i).getMission())) { 
-					error("Mission name \"" + sim.getRobots().getRobots().get(i).getMission() + "\"" +
-						  "is used but is not defined!", null);
-				}
+	public void checkDuplicateMissionNames(Mission mission) {
+		Missions inMissions = (Missions)mission.eContainer();
+		var missions = inMissions.getMissions();
+		int idx = missions.indexOf(mission);
+		for (int i = 0; i < missions.size(); i++) {
+			if (i == idx) continue;
+			if (missions.get(idx).getName().equals(missions.get(i).getName())) {
+				error("Duplicate mission name: \"" + missions.get(i).getName() + "\"!", null);
 			}
 		}
 	}
 	
 	@Check
-	public void checkDuplicateMissionNames(Missions missions) {
-		System.out.println("HERE");
-		Mission[] mArray = (Mission[])missions.getMissions().toArray();
-		int numberMissions = missions.getMissions().size();
-		for (int i = 0; i < numberMissions; i++) {
-			for (int j = i+1; j < numberMissions; j++) {
-				if (mArray[i] != mArray[j] && mArray[i].getName().equals(mArray[j].getName())) {
-					error("Duplicate mission name: \"" + mArray[i].getName() + "\"!", null);
-				}
+	public void checkMissionsWithoutDrive(Mission mission) {
+		var actions = mission.getActions();
+		boolean containsDrive = false;
+		for (int i = 0; i < actions.size(); i++) {
+			var action = actions.get(i);
+			if (action.getType() instanceof DriveAction) {
+				containsDrive = true;
+				break;
 			}
+		}
+		if (!containsDrive) {
+			warning("Mission contains no Drive, presumably nothing happens", null);
+		}
+	}
+
+	@Check
+	public void checkSpeedZero(Speed speed) {
+		if (speed == null) return;
+		int speedD = speed.getSpeed();
+		if (speedD <= 0) {
+			error("Speed should be a positive integer", null);
 		}
 	}
 	
 	@Check
-	public void checkDuplicateMissions(Missions missions) {
-		System.out.println("HERE (MISSIons)");
-		Mission[] mArray = (Mission[])missions.getMissions().toArray();
-		int numberMissions = missions.getMissions().size();
-		for (int i = 0; i < numberMissions; i++) {
-			for (int j = i+1; j < numberMissions; j++) {
-				if (!mArray[i].getName().equals(mArray[j].getName()) && Auxiliary.EqualUpToRenaming(mArray[i], mArray[j])) {
-					warning("Missions \"" + mArray[i].getName() + "\" and \"" + mArray[j].getName() + "\" are equal up to renaming!", null);
-				}
-			}
+	public void checkNonLastMissionWithoutCelebration(Mission mission) {
+		Missions inMissions = (Missions)mission.eContainer();
+		int idx = inMissions.getMissions().indexOf(mission);
+		if (idx < inMissions.getMissions().size() - 1 && mission.getCelebration() == null) {
+			info("This mission has no celebration so it might be " + 
+					"difficult to seperate it from others during runtime", null);
 		}
 	}
 	
 	@Check
-	public void checkDuplicateRobotNames(Robots robots) {
-		Robot[] rArray = (Robot[])robots.getRobots().toArray();
-		int numberRobots = robots.getRobots().size();
-		for (int i = 0; i < numberRobots; i++) {
-			for (int j = i+1; j < numberRobots; j++) {
-				if (rArray[i] != rArray[j] && rArray[i].getName().equals(rArray[j].getName())) {
-					error("Duplicate robot name: \"" + rArray[i].getName() + "\"!", null);
-				}
-			}
+	public void checkSpeakCelebration(SpeakCelebration speakCelebration) {
+		if (speakCelebration.getToSpeak() == null || speakCelebration.getToSpeak().equals("")) {
+			warning("This speak celebration will say nothing at all", null);
 		}
 	}
-	
+
 	@Check
-	public void checkDuplicateArgNames(Args args) {
-		Arg[] aArray = (Arg[])args.getArguments().toArray();
-		int numberArgs = args.getArguments().size();
-		for (int i = 0; i < numberArgs; i++) {
-			for (int j = i+1; j < numberArgs; j++) {
-				if (aArray[i] != aArray[j] && aArray[i].getVar().equals(aArray[j].getVar())) {
-					error("Duplicate robot name: \"" + aArray[i].getVar() + "\"!", null);
-				}
-			}
-		}
-	}
-	
-	@Check
-	public void checkValidActionArgs(Action action) {
-		if (action.getArguments() != null && action.getArguments().getArguments().size() > 0) {
-			List<String> validArgs = Auxiliary.ValidArgs(action.getType());
-			for (int i = 0; i < action.getArguments().getArguments().size(); i++) {
-				if (!validArgs.contains(action.getArguments().getArguments().get(i).getVar())) {
-					error("Action \"" + action.getType().toString() + "\" does not have argument \"" + 
-						  action.getArguments().getArguments().get(i).getVar() + "\"", null);
-				}
-			}
+	public void checkEqualPriorities(Mission mission) {
+		var actions = mission.getActions();
+		HashSet<Integer> priorities = new HashSet<>();
+		for (int i = 0; i < actions.size(); i++) {
+			boolean dup = priorities.add(actions.get(i).getPriority().getPriority());
+			if (!dup) warning("Two or more actions with the same priority", null);
 		}
 		
 	}
 	
+	@Check
+	public void checkPushRockAction(PushRockAction pushRockAction) {
+		if (pushRockAction.getNr_rocks() <= 0) {
+			error("Wanting to push " + String.valueOf(pushRockAction.getNr_rocks()) + " is not logical", null);
+		}
+	}
+	
+	@Check
+	public void checkMeasureAction(MeasureAction measureAction) {
+		var colors = measureAction.getColors();
+		ArrayList<Color> seenColors = new ArrayList<>();
+		for (int i = 0; i < colors.size(); i++) {
+			if (seenColors.contains(colors.get(i))) {
+				warning("Specifying one color multiple times does not result in measuring it multiple times", null);
+			}
+			seenColors.add(colors.get(i));
+		}
+	}
+
+	@Check
+	public void checkAvoidLakesAction(DontDrownAction dontdrownaction) {
+		var colors = dontdrownaction.getColors();
+		ArrayList<Color> avoidColors = new ArrayList<>();
+		for (int i = 0; i < colors.size(); i++) {
+			if (avoidColors.contains(colors.get(i))) {
+				warning("Specifying one color multiple times does not result in avoiding it harder", null);
+			}
+			avoidColors.add(colors.get(i));
+		}
+	}
+
+	@Check
+	public void checkRotation(Rotation rotation) {
+		if (rotation == null) return;
+		double rotationD = Double.parseDouble(rotation.getRotation());
+		if (rotationD == 0.0) {
+			warning("Rotating 0 may not be very useful", null);
+		}
+	}
+
+	@Check
+	public void checkGoalAction(Mission mission) {
+		var actions = mission.getActions();
+		boolean hasGoalAction = false;
+		for (int i = 0; i < actions.size(); i++) {
+			var action = actions.get(i);
+			if (action.getType() instanceof MeasureAction || 
+				action.getType() instanceof PushRockAction || 
+				action.getType() instanceof ColorDetAction) {
+				hasGoalAction = true;
+				break;
+			}
+		}
+		if (!hasGoalAction) {
+			warning("Mission does not contain a goal action", null);
+		}
+	}
+	
+	@Check
+	public void checkMultipleGoalActions(Mission mission) {
+		var actions = mission.getActions();
+		boolean hasGoalAction = false;
+		boolean hasMultipleGoalActions = false;
+		for (int i = 0; i < actions.size(); i++) {
+			var action = actions.get(i);
+			if (action.getType() instanceof MeasureAction || 
+				action.getType() instanceof PushRockAction || 
+				action.getType() instanceof ColorDetAction) {
+				if (hasGoalAction) {
+					hasMultipleGoalActions = true;
+					break;
+				}
+				hasGoalAction = true;
+			}
+		}
+		if (hasMultipleGoalActions) {
+			warning("Mission contains multiple goal actions and will succeed after one of the goal actions succeeded", null);
+		}
+	}
+	
+	@Check
+	public void checkPriorities(Mission mission) {
+		// either all priorities have to be filled in, or none
+		boolean given = mission.getActions().get(0).getPriority() != null;
+		for (int i = 1; i < mission.getActions().size(); i++) {
+			if (given != (mission.getActions().get(i).getPriority() != null)) {
+				error("Either all priorities have to be given, or none of them should be given", null);
+				break;
+			}
+		}
+	}
+	
+	@Check
+	public void checkDuplicateMissions(Mission mission) {
+		Missions inMissions = (Missions)mission.eContainer();
+		var missions = inMissions.getMissions();
+		int idx = missions.indexOf(mission);
+		for (int i = 0; i < missions.size(); i++) {
+			if (i == idx) continue;
+			if (missionsAreEqual(missions.get(idx), missions.get(i))) {
+				warning("This mission has already been defined (duplicated with " + missions.get(i).getName() + ")", null);
+			}
+		}
+	}
+
+	private boolean missionsAreEqual(Mission m1, Mission m2) {
+		if (m1.getActions().size() != m2.getActions().size()) return false;
+		HashSet<Action> m2ActionsHash = new HashSet<>();
+		HashMap<Action, Action> mapping = new HashMap<>();
+		for (Action a1 : m1.getActions()) {
+			int equalActionIdx = findEqualAction(m2ActionsHash, m2, a1);
+			if (equalActionIdx >= 0) {
+				var m2Action = m2.getActions().get(equalActionIdx);
+				m2ActionsHash.add(m2Action);
+				mapping.put(a1, m2Action);
+			} else {
+				return false;
+			}
+		}
+		
+		var orderedM1 = getOrderedActions(m1);
+		var orderedM2 = getOrderedActions(m2);
+		
+		for (Action from : mapping.keySet()) {
+			int m1idx = orderedM1.indexOf(from);
+			int m2idx = orderedM2.indexOf(mapping.get(from));
+			if (m1idx != m2idx) return false;
+		}
+		
+		return equalCelebrations(m1.getCelebration(), m2.getCelebration());
+	}
+	
+	private ArrayList<Action> getOrderedActions(Mission m) {
+		if (m.getActions().get(0).getPriority() == null) {
+			// implicit prios, just return list of actions
+			return new ArrayList<Action>(m.getActions());
+		} else {
+			// explicit prios
+			return getOrderedActionsExplicitPrios(m);
+		}
+	}
+	
+	private ArrayList<Action> getOrderedActionsExplicitPrios(Mission m) {
+		var actions = new ArrayList<Action>(m.getActions());
+		actions.sort(new Comparator<Action>() {
+			@Override
+			public int compare(Action a1, Action a2) {
+				int prio1 = a1.getPriority().getPriority();
+				int prio2 = a2.getPriority().getPriority();
+				if (prio1 == prio2) return 0;
+				if (prio1 > prio2) return -1;
+				return 1;
+			}
+		});
+		return actions;
+	}
+	
+	private boolean equalCelebrations(Celebration c1, Celebration c2) {
+		if (c1 == null && c2 == null) return true;
+		if (c1 == null || c2 == null) return false;
+		if (c1 instanceof DanceCelebration && c2 instanceof DanceCelebration) return true;
+		if (c1 instanceof DanceCelebration || c2 instanceof DanceCelebration) return false;
+		var speakCelebration1 = (SpeakCelebration)c1;
+		var speakCelebration2 = (SpeakCelebration)c2;
+		return speakCelebration1.getToSpeak().equals(speakCelebration2.getToSpeak());
+	}
+
+	private int findEqualAction(HashSet<Action> notIn, Mission m2, Action a) {
+		for (Action action : m2.getActions()) {
+			if (notIn.contains(action)) continue;
+			if (!action.getType().getClass().getName().equals(a.getType().getClass().getName())) continue;
+			switch (normalizeName(action.getType().getClass().getName())) {
+				case "BorderActionImpl":
+					if (equalActions((BorderAction)a.getType(), (BorderAction)action.getType())) {
+						return m2.getActions().indexOf(action);
+					}
+					break;
+				case "CollisionActionImpl":
+					if (equalActions((CollisionAction)a.getType(), (CollisionAction)action.getType())) {
+						return m2.getActions().indexOf(action);
+					}
+					break;
+				case "ColorDetActionImpl":
+					if (equalActions((ColorDetAction)a.getType(), (ColorDetAction)action.getType())) {
+						return m2.getActions().indexOf(action);
+					}
+					break;
+				case "DriveActionImpl":
+					if (equalActions((DriveAction)a.getType(), (DriveAction)action.getType())) {
+						return m2.getActions().indexOf(action);
+					}
+					break;
+				case "UltrasoundActionsImpl":
+					if (equalActions((UltrasoundAction)a.getType(), (UltrasoundAction)action.getType())) {
+						return m2.getActions().indexOf(action);
+					}
+					break;
+				case "DontDrownActionImpl":
+					if (equalActions((DontDrownAction)a.getType(), (DontDrownAction)action.getType())) {
+						return m2.getActions().indexOf(action);
+					}
+					break;
+				case "MeasureActionImpl":
+					if (equalActions((MeasureAction)a.getType(), (MeasureAction)action.getType())) {
+						return m2.getActions().indexOf(action);
+					}	
+					break;
+				case "PushRockActionImpl":
+					if (equalActions((PushRockAction)a.getType(), (PushRockAction)action.getType())) {
+						return m2.getActions().indexOf(action);
+					}	
+					break;
+				default:
+					continue;
+			}
+		}
+		return -1;
+	}
+
+	private boolean equalActions(BorderAction a1, BorderAction a2) {
+		return equalRotation(a1.getRotation(), a2.getRotation());
+	}
+	
+	private boolean equalRotation(Rotation r1, Rotation r2) {
+		if (r1 == null && r2 == null) return true;
+		if (r1 == null && Double.parseDouble(r2.getRotation()) == 0.3) return true;
+		if (r2 == null && Double.parseDouble(r1.getRotation()) == 0.3) return true;
+		if (Double.parseDouble(r1.getRotation()) == Double.parseDouble(r2.getRotation())) return true;
+		return false;
+	}
+
+	private boolean equalActions(CollisionAction a1, CollisionAction a2) {
+		return equalRotation(a1.getRotation(), a2.getRotation());
+	}
+
+	private boolean equalActions(ColorDetAction a1, ColorDetAction a2) {
+		return equalColors(a1.getColors(), a2.getColors());
+	}
+
+	private boolean equalActions(MeasureAction a1, MeasureAction a2) {
+		return equalColors(a1.getColors(), a2.getColors());
+	}
+
+	private boolean equalActions(DontDrownAction a1, DontDrownAction a2) {
+		return equalColors(a1.getColors(), a2.getColors()) && equalRotation(a1.getRotation(), a2.getRotation());
+	}
+
+	private boolean equalColors(EList<Color> c1, EList<Color> c2) {
+		HashSet<Color> h1 = new HashSet<>();
+		h1.addAll(c1);
+		HashSet<Color> h2 = new HashSet<>();
+		h2.addAll(c2);
+		return h1.equals(h2);
+	}
+
+	private boolean equalActions(DriveAction a1, DriveAction a2) {
+		if (a1.getSpeed() == null && a2.getSpeed() == null) return true;
+		if (a1.getSpeed() == null && a2.getSpeed().getSpeed() == 30) return true;
+		if (a2.getSpeed() == null && a1.getSpeed().getSpeed() == 30) return true;
+		return a1.getSpeed().getSpeed() == a2.getSpeed().getSpeed();
+	}
+
+	private boolean equalActions(UltrasoundAction a1, UltrasoundAction a2) {
+		if (!equalRotation(a1.getRotation(), a2.getRotation())) return false;
+		return a1.getDodgeRocks() == a2.getDodgeRocks();
+	}
+	
+	private boolean equalActions(PushRockAction a1, PushRockAction a2) {
+		return a1.getNr_rocks() == a2.getNr_rocks();
+	}
+	
+	private String normalizeName(String name) {
+		int lastDot = name.lastIndexOf(".");
+		return name.substring(lastDot + 1);
+	}
 }

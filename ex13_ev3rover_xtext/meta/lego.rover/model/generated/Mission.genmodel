@@ -6,45 +6,71 @@
     copyrightFields="false" runtimeVersion="2.20">
   <genPackages prefix="Mission" basePackage="lego.rover" disposableProviderFactory="true"
       fileExtensions="mdsl" ecorePackage="Mission.ecore#/">
-    <genEnums typeSafeEnumCompatible="false" ecoreEnum="Mission.ecore#//ActionType">
-      <genEnumLiterals ecoreEnumLiteral="Mission.ecore#//ActionType/BorderAction"/>
-      <genEnumLiterals ecoreEnumLiteral="Mission.ecore#//ActionType/CollisionAction"/>
-      <genEnumLiterals ecoreEnumLiteral="Mission.ecore#//ActionType/ColorDetAction"/>
-      <genEnumLiterals ecoreEnumLiteral="Mission.ecore#//ActionType/DriveAction"/>
-      <genEnumLiterals ecoreEnumLiteral="Mission.ecore#//ActionType/UltrasoundAction"/>
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="Mission.ecore#//Boolean">
+      <genEnumLiterals ecoreEnumLiteral="Mission.ecore#//Boolean/True"/>
+      <genEnumLiterals ecoreEnumLiteral="Mission.ecore#//Boolean/False"/>
     </genEnums>
-    <genClasses ecoreClass="Mission.ecore#//Simulation">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Mission.ecore#//Simulation/missions"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Mission.ecore#//Simulation/robots"/>
-    </genClasses>
-    <genClasses ecoreClass="Mission.ecore#//Robots">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Mission.ecore#//Robots/robots"/>
-    </genClasses>
-    <genClasses ecoreClass="Mission.ecore#//Robot">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Mission.ecore#//Robot/name"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Mission.ecore#//Robot/mission"/>
-    </genClasses>
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="Mission.ecore#//Color">
+      <genEnumLiterals ecoreEnumLiteral="Mission.ecore#//Color/Black"/>
+      <genEnumLiterals ecoreEnumLiteral="Mission.ecore#//Color/Blue"/>
+      <genEnumLiterals ecoreEnumLiteral="Mission.ecore#//Color/Green"/>
+      <genEnumLiterals ecoreEnumLiteral="Mission.ecore#//Color/Yellow"/>
+      <genEnumLiterals ecoreEnumLiteral="Mission.ecore#//Color/Red"/>
+      <genEnumLiterals ecoreEnumLiteral="Mission.ecore#//Color/White"/>
+      <genEnumLiterals ecoreEnumLiteral="Mission.ecore#//Color/Brown"/>
+    </genEnums>
     <genClasses ecoreClass="Mission.ecore#//Missions">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Mission.ecore#//Missions/missions"/>
     </genClasses>
     <genClasses ecoreClass="Mission.ecore#//Mission">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Mission.ecore#//Mission/name"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Mission.ecore#//Mission/actions"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Mission.ecore#//Mission/celebration"/>
+    </genClasses>
+    <genClasses ecoreClass="Mission.ecore#//Celebration"/>
+    <genClasses ecoreClass="Mission.ecore#//DanceCelebration"/>
+    <genClasses ecoreClass="Mission.ecore#//SpeakCelebration">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Mission.ecore#//SpeakCelebration/toSpeak"/>
     </genClasses>
     <genClasses ecoreClass="Mission.ecore#//Action">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Mission.ecore#//Action/type"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Mission.ecore#//Action/type"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Mission.ecore#//Action/priority"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Mission.ecore#//Action/arguments"/>
     </genClasses>
     <genClasses ecoreClass="Mission.ecore#//Priority">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Mission.ecore#//Priority/priority"/>
     </genClasses>
-    <genClasses ecoreClass="Mission.ecore#//Args">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Mission.ecore#//Args/arguments"/>
+    <genClasses ecoreClass="Mission.ecore#//ActionType"/>
+    <genClasses ecoreClass="Mission.ecore#//Rotation">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Mission.ecore#//Rotation/rotation"/>
     </genClasses>
-    <genClasses ecoreClass="Mission.ecore#//Arg">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Mission.ecore#//Arg/var"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Mission.ecore#//Arg/val"/>
+    <genClasses ecoreClass="Mission.ecore#//Speed">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Mission.ecore#//Speed/speed"/>
+    </genClasses>
+    <genClasses ecoreClass="Mission.ecore#//PushRockAction">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Mission.ecore#//PushRockAction/nr_rocks"/>
+    </genClasses>
+    <genClasses ecoreClass="Mission.ecore#//MeasureAction">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Mission.ecore#//MeasureAction/colors"/>
+    </genClasses>
+    <genClasses ecoreClass="Mission.ecore#//DontDrownAction">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Mission.ecore#//DontDrownAction/colors"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Mission.ecore#//DontDrownAction/rotation"/>
+    </genClasses>
+    <genClasses ecoreClass="Mission.ecore#//DriveAction">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Mission.ecore#//DriveAction/speed"/>
+    </genClasses>
+    <genClasses ecoreClass="Mission.ecore#//UltrasoundAction">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Mission.ecore#//UltrasoundAction/rotation"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Mission.ecore#//UltrasoundAction/dodgeRocks"/>
+    </genClasses>
+    <genClasses ecoreClass="Mission.ecore#//ColorDetAction">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Mission.ecore#//ColorDetAction/colors"/>
+    </genClasses>
+    <genClasses ecoreClass="Mission.ecore#//CollisionAction">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Mission.ecore#//CollisionAction/rotation"/>
+    </genClasses>
+    <genClasses ecoreClass="Mission.ecore#//BorderAction">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Mission.ecore#//BorderAction/rotation"/>
     </genClasses>
   </genPackages>
 </genmodel:GenModel>

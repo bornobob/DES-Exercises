@@ -1,20 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="mission" nsURI="http://www.rover.lego/Mission" nsPrefix="mission">
-  <eClassifiers xsi:type="ecore:EClass" name="Simulation">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="missions" eType="#//Missions"
-        containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="robots" eType="#//Robots"
-        containment="true"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Robots">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="robots" upperBound="-1"
-        eType="#//Robot" containment="true"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Robot">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="mission" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-  </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Missions">
     <eStructuralFeatures xsi:type="ecore:EReference" name="missions" upperBound="-1"
         eType="#//Mission" containment="true"/>
@@ -23,30 +9,75 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="actions" upperBound="-1"
         eType="#//Action" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="celebration" eType="#//Celebration"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Celebration"/>
+  <eClassifiers xsi:type="ecore:EClass" name="DanceCelebration" eSuperTypes="#//Celebration"/>
+  <eClassifiers xsi:type="ecore:EClass" name="SpeakCelebration" eSuperTypes="#//Celebration">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="toSpeak" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Action">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" eType="#//ActionType"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="priority" eType="#//Priority"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="type" eType="#//ActionType"
         containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="arguments" eType="#//Args"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="priority" eType="#//Priority"
         containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Priority">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="priority" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Args">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="arguments" upperBound="-1"
-        eType="#//Arg" containment="true"/>
+  <eClassifiers xsi:type="ecore:EClass" name="ActionType"/>
+  <eClassifiers xsi:type="ecore:EEnum" name="Boolean">
+    <eLiterals name="True" literal="true"/>
+    <eLiterals name="False" value="1" literal="false"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Arg">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="var" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="val" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  <eClassifiers xsi:type="ecore:EClass" name="Rotation">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="rotation" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EEnum" name="ActionType">
-    <eLiterals name="BorderAction" literal="BorderAction"/>
-    <eLiterals name="CollisionAction" value="1" literal="CollisionAction"/>
-    <eLiterals name="ColorDetAction" value="2" literal="ColorDetAction"/>
-    <eLiterals name="DriveAction" value="3" literal="DriveAction"/>
-    <eLiterals name="UltrasoundAction" value="4" literal="UltrasoundAction"/>
+  <eClassifiers xsi:type="ecore:EEnum" name="Color">
+    <eLiterals name="Black" literal="Black"/>
+    <eLiterals name="Blue" value="1" literal="Blue"/>
+    <eLiterals name="Green" value="2" literal="Green"/>
+    <eLiterals name="Yellow" value="3" literal="Yellow"/>
+    <eLiterals name="Red" value="4" literal="Red"/>
+    <eLiterals name="White" value="5" literal="White"/>
+    <eLiterals name="Brown" value="6" literal="Brown"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Speed">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="speed" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="PushRockAction" eSuperTypes="#//ActionType">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="nr_rocks" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="MeasureAction" eSuperTypes="#//ActionType">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="colors" unique="false"
+        upperBound="-1" eType="#//Color"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="DontDrownAction" eSuperTypes="#//ActionType">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="colors" unique="false"
+        upperBound="-1" eType="#//Color"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="rotation" eType="#//Rotation"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="DriveAction" eSuperTypes="#//ActionType">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="speed" eType="#//Speed"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="UltrasoundAction" eSuperTypes="#//ActionType">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="rotation" eType="#//Rotation"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="dodgeRocks" eType="#//Boolean"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ColorDetAction" eSuperTypes="#//ActionType">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="colors" unique="false"
+        upperBound="-1" eType="#//Color"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="CollisionAction" eSuperTypes="#//ActionType">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="rotation" eType="#//Rotation"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="BorderAction" eSuperTypes="#//ActionType">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="rotation" eType="#//Rotation"
+        containment="true"/>
   </eClassifiers>
 </ecore:EPackage>

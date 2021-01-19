@@ -4,7 +4,7 @@
 package lego.rover.generator;
 
 import lego.rover.generator.PyGenerator;
-import lego.rover.mission.Simulation;
+import lego.rover.mission.Missions;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.xtext.generator.AbstractGenerator;
@@ -22,12 +22,14 @@ public class MissionGenerator extends AbstractGenerator {
   @Override
   public void doGenerate(final Resource resource, final IFileSystemAccess2 fsa, final IGeneratorContext context) {
     EObject _head = IteratorExtensions.<EObject>head(resource.getAllContents());
-    final Simulation root = ((Simulation) _head);
+    final Missions root = ((Missions) _head);
     if ((root != null)) {
       String _lastSegment = resource.getURI().lastSegment();
       String _plus = ("generated/" + _lastSegment);
       String path = (_plus + "/");
-      fsa.generateFile((path + "main.py"), PyGenerator.ToText(root));
+      fsa.generateFile((path + "main_main.py"), PyGenerator.ToText(root));
+      fsa.generateFile((path + "main_slave.py"), PyGenerator.SlaveToText());
+      fsa.generateFile((path + "main.py"), PyGenerator.MainToText());
     }
   }
 }

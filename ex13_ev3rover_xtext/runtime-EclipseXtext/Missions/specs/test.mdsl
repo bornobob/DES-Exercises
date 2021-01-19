@@ -1,36 +1,21 @@
-Missions
- ToTheMoon: DriveAction 
- 			
- 			BorderAction
- 			Priority 1
-
- ToTheMoon2: DriveAction 
- 			
- 			 BorderAction
- 			 Arguments [("rotate_degrees" = ".5")]
-
- AllTheColours: DriveAction
- 
-                BorderAction
-                Priority 10
-                
-                UltrasoundAction
-                Priority 5
-                
-                ColorDetAction 
-                // 5 = red, 4 = yellow, 3 = blue (same as ColorSensor.COLOR_*)
-                Arguments [("colors" = "[5, 4, 2]")]
-                
- AllTheColoursButFaster: DriveAction
-                         Arguments [("speed" = "80")]
-                         
-                         BorderAction
-			             Priority 10
-			                
-			             UltrasoundAction
-			             Priority 5
-			                
-			             ColorDetAction 
-			             Arguments [("colors" = "[5, 4, 2]")]
-Robots
- Bot2: ToTheMoon
+Name24 : BorderDetection
+		  Rotations: 0.3
+		 ColorDetection
+           Colors: [Red]
+         DontDrown
+          LakeColors: [Red Yellow Blue]
+         Drive
+          Speed: 3
+         Celebration: Speak "weeeeeeeeeeeeeeeeeee"
+Name52 : BorderDetection
+          Priority: 4
+         DontDrown
+          LakeColors: [Red Yellow Blue]
+          Priority: 3
+		 PushRocks
+		  RocksToPush: 1
+		  Priority: 2 
+         Drive
+          Speed: 3
+          Priority: 1
+         Celebration: Dance

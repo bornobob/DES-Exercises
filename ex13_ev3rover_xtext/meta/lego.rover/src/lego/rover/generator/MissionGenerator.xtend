@@ -7,7 +7,7 @@ import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.xtext.generator.AbstractGenerator
 import org.eclipse.xtext.generator.IFileSystemAccess2
 import org.eclipse.xtext.generator.IGeneratorContext
-import lego.rover.mission.Simulation
+import lego.rover.mission.Missions
 
 /**
  * Generates code from your model files on save.
@@ -17,10 +17,12 @@ import lego.rover.mission.Simulation
 class MissionGenerator extends AbstractGenerator {
 
 	override void doGenerate(Resource resource, IFileSystemAccess2 fsa, IGeneratorContext context) {
-		val root = resource.allContents.head as Simulation;
+		val root = resource.allContents.head as Missions;
         if (root !== null) {
 			var path = "generated/" + resource.getURI().lastSegment + "/"
-			fsa.generateFile(path + "main.py", PyGenerator.ToText(root))
+			fsa.generateFile(path + "main_main.py", PyGenerator.ToText(root))
+			fsa.generateFile(path + "main_slave.py", PyGenerator.SlaveToText())
+			fsa.generateFile(path + "main.py", PyGenerator.MainToText())
 		}
 	}
 }
