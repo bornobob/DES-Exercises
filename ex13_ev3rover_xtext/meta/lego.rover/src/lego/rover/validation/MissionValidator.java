@@ -277,7 +277,7 @@ public class MissionValidator extends AbstractMissionValidator {
 						return m2.getActions().indexOf(action);
 					}
 					break;
-				case "UltrasoundActionsImpl":
+				case "UltrasoundActionImpl":
 					if (equalActions((UltrasoundAction)a.getType(), (UltrasoundAction)action.getType())) {
 						return m2.getActions().indexOf(action);
 					}

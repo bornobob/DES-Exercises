@@ -89,7 +89,7 @@ class PyGenerator {
 		if (actionType instanceof DriveAction) return "DriveAction(" + SpeedToText((actionType as DriveAction).speed);
 		if (actionType instanceof UltrasoundAction) return "UltrasoundAction(" + RotationToText((actionType as UltrasoundAction).rotation) + DodgeRocksToText((actionType as UltrasoundAction).dodgeRocks);
 		if (actionType instanceof DontDrownAction) return "DontDrownAction(lakes=" + ColorsToText((actionType as DontDrownAction).colors) + ", " + RotationToText((actionType as DontDrownAction).rotation);
-		if (actionType instanceof MeasureAction) return "MeasureAction(colors=" + ColorsToText((actionType as ColorDetAction).colors) + ", ";
+		if (actionType instanceof MeasureAction) return "MeasureAction(colors=" + ColorsToText((actionType as MeasureAction).colors) + ", ";
 		if (actionType instanceof PushRockAction) return "PushRockAction(number_of_rocks=" + (actionType as PushRockAction).nr_rocks + ", ";
 	}
 	
@@ -126,5 +126,5 @@ class PyGenerator {
 	
 	def static PriorityToText(Priority priority, int default_prio)'''«IF (priority === null)»«default_prio»«ELSE»«priority.priority»«ENDIF»'''
 	
-	def static CelebrationToText(Celebration celeb)'''«IF (celeb instanceof DanceCelebration)»DanceCelebration()«ELSE»SpeakCelebration('«(celeb as SpeakCelebration).toSpeak»')«ENDIF»'''
+	def static CelebrationToText(Celebration celeb)'''«IF (celeb instanceof DanceCelebration)»DanceCelebration()«ELSE»SpeakCelebration('«(celeb as SpeakCelebration).toSpeak.replace("'", "\\'")»')«ENDIF»'''
 }

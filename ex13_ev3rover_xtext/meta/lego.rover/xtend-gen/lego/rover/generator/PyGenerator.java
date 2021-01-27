@@ -300,7 +300,7 @@ public class PyGenerator {
       return (_plus_3 + _RotationToText_3);
     }
     if ((actionType instanceof MeasureAction)) {
-      String _ColorsToText_2 = PyGenerator.ColorsToText(((ColorDetAction) actionType).getColors());
+      String _ColorsToText_2 = PyGenerator.ColorsToText(((MeasureAction) actionType).getColors());
       String _plus_4 = ("MeasureAction(colors=" + _ColorsToText_2);
       return (_plus_4 + ", ");
     }
@@ -376,8 +376,8 @@ public class PyGenerator {
         _builder.append("DanceCelebration()");
       } else {
         _builder.append("SpeakCelebration(\'");
-        String _toSpeak = ((SpeakCelebration) celeb).getToSpeak();
-        _builder.append(_toSpeak);
+        String _replace = ((SpeakCelebration) celeb).getToSpeak().replace("\'", "\\\'");
+        _builder.append(_replace);
         _builder.append("\')");
       }
     }
