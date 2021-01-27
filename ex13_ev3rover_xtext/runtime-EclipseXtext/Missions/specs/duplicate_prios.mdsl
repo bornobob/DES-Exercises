@@ -1,0 +1,11 @@
+Mission : BorderDetection
+            Priority: 2
+		  ColorDetection
+            Colors: [Red]
+            Priority: 0
+          DontDrown
+            LakeColors: [Red Yellow Blue]
+            Priority: 1
+          Drive
+            Priority: 0
+          

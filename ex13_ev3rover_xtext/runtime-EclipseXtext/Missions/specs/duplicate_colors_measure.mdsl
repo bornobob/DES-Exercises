@@ -1,0 +1,10 @@
+Mission : BorderDetection
+		  MeasureLakes
+		    LakeColors: [Red Red]
+          DontDrown
+            LakeColors: [Red Yellow Blue]
+          UltraSound
+            Rotations: 0.5
+            DodgeRocks: false
+          Drive
+          

@@ -22,10 +22,10 @@ sensor_map_master = {'tank_drive': MoveDifferential(OUTPUT_A, OUTPUT_D, EV3Educa
 def create_runner():
 	r = Robot(SensorMap(sensor_map_master), bluetooth=BluetoothMaster(MAC_ADDRESS, PORT))
 	
-	mission_Name24 = Mission([BorderAction(rotate_degrees=0.3, priority=4), ColorDetAction(colors=[ColorSensor.COLOR_RED], priority=3), DontDrownAction(lakes=[ColorSensor.COLOR_RED, ColorSensor.COLOR_YELLOW, ColorSensor.COLOR_BLUE], priority=2), DriveAction(speed=3, priority=1)], SpeakCelebration('weeeeeeeeeeeeeeeeeee'))
-	mission_Name52 = Mission([BorderAction(priority=4), DontDrownAction(lakes=[ColorSensor.COLOR_RED, ColorSensor.COLOR_YELLOW, ColorSensor.COLOR_BLUE], priority=3), PushRockAction(number_of_rocks=1, priority=2), DriveAction(speed=3, priority=1)], DanceCelebration())
+	mission_Mission1 = Mission([BorderAction(priority=5), ColorDetAction(colors=[ColorSensor.COLOR_RED], priority=4), DontDrownAction(lakes=[ColorSensor.COLOR_RED, ColorSensor.COLOR_YELLOW, ColorSensor.COLOR_BLUE], priority=3), UltrasoundAction(priority=2), DriveAction(priority=1)], DanceCelebration())
+	mission_Mission2 = Mission([BorderAction(rotate_degrees=0.300, priority=5), ColorDetAction(colors=[ColorSensor.COLOR_RED], priority=4), DontDrownAction(lakes=[ColorSensor.COLOR_RED, ColorSensor.COLOR_YELLOW, ColorSensor.COLOR_BLUE, ColorSensor.COLOR_BLUE], priority=3), UltrasoundAction(rotate_degrees=0.3, priority=2), DriveAction(speed=30, priority=1)], DanceCelebration())
 	
-	Runner(r, [mission_Name24, mission_Name52]).run()
+	Runner(r, [mission_Mission1, mission_Mission2]).run()
 
 
 if __name__ == '__main__':

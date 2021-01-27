@@ -1,0 +1,20 @@
+Mission1 : BorderDetection
+		   ColorDetection
+             Colors: [Red]
+           DontDrown
+             LakeColors: [Red Yellow Blue]
+           UltraSound
+           Drive
+           Celebration: Dance
+Mission2 : BorderDetection
+             Rotations: 0.300
+		   ColorDetection
+             Colors: [Red]
+           DontDrown
+             LakeColors: [Red Yellow Blue Blue]
+           UltraSound
+             Rotations: 0.3
+             DodgeRocks: true
+           Drive
+             Speed: 30
+           Celebration: Dance

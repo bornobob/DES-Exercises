@@ -1,0 +1,11 @@
+Mission : BorderDetection
+		  ColorDetection
+            Colors: [Red]
+          DontDrown
+            LakeColors: [Red Yellow Blue]
+          UltraSound
+            Rotations: 0.5
+            DodgeRocks: false
+          Drive
+          Celebration: Speak ""
+          
